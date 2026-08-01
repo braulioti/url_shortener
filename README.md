@@ -6,7 +6,7 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 
 | Layer | Technology |
 | --- | --- |
-| Application (UI + API + redirect) | Node.js (single app) |
+| Application (UI + API + redirect) | Node.js + TypeScript (single app) |
 | Database | PostgreSQL |
 | Runtime | Docker Compose |
 
@@ -44,13 +44,39 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 
 ## Getting started
 
-Implementation is in progress. When the stack is ready, the expected local flow is:
+### Local (without Docker)
+
+Requires Node.js 20+.
+
+```bash
+cp .env.example .env
+npm install
+npm run build
+npm start
+```
+
+The server listens on `http://localhost:3000` (override with `PORT`).  
+`GET /health` returns `{ "status": "ok" }`.
+
+For development with TypeScript auto-reload:
+
+```bash
+npm run dev
+```
+
+Type-check without emitting:
+
+```bash
+npm run typecheck
+```
+
+### Docker Compose
+
+Still in progress (see checklist ISS-005+). When ready:
 
 1. Copy environment template (e.g. `.env.example` → `.env`) and fill in values
 2. Start the stack with Docker Compose
 3. Open the app URL published by Compose
-
-Exact commands will be added here once Compose and the app scaffold exist.
 
 ## License
 

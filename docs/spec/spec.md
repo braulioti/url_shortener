@@ -11,6 +11,7 @@ A simple URL shortener that accepts a long URL, generates a short link, and prod
 - Redirect users from the short URL (or QR scan) to the original URL
 - Provide a public preview page for viewing the short URL and its QR code
 - Allow authorized users to create custom short codes and manage their URLs
+- Support multiple UI languages, with **pt-BR** as the default locale
 
 ## Non-Goals
 
@@ -28,6 +29,7 @@ A simple URL shortener that accepts a long URL, generates a short link, and prod
 | Short URL | Public URL that resolves via the short code and redirects to the original URL |
 | QR code | Image encoding the short URL |
 | Preview page | Page at `/v/{short_code}` that displays the short URL and QR code |
+| Locale | Language used for UI strings and user-facing messages (default: `pt-BR`) |
 
 ## Public Features
 
@@ -89,6 +91,18 @@ Authenticated users have a management area where they can:
 
 Deleting a short URL invalidates both the redirect and the preview page for that code.
 
+## Internationalization (i18n)
+
+The product must support multiple languages for user-facing text (UI labels, form messages, validation/error messages shown to users).
+
+### Rules
+
+- **Default locale:** `pt-BR` (Brazilian Portuguese). When no locale is selected or detected, the UI must use `pt-BR`.
+- **Additional locales:** At least one other locale must be supported (e.g. `en`). Exact locale set may grow during implementation.
+- **Scope:** Applies to interactive UI and user-visible messages. HTTP redirects themselves are language-agnostic.
+- **Selection:** Users should be able to switch language (exact mechanism — selector, preference, or `Accept-Language` — defined at implementation time). Preference may be remembered for the session or a longer period when practical.
+- **Consistency:** All screens in scope (public create, preview, sign-in, management) must use the active locale. Missing translations must fall back to `pt-BR`.
+
 ## URL Routing Summary
 
 | Route | Behavior |
@@ -109,6 +123,7 @@ Exact path conventions for the short URL root (e.g. `/{code}` vs `/r/{code}`) ma
 6. Support login for pre-authorized users.
 7. Allow authenticated users to create custom-named short codes.
 8. Allow authenticated users to list, edit, and delete their URLs.
+9. Support multiple UI languages with default locale `pt-BR` and fallback to `pt-BR` for missing translations.
 
 ## Non-Functional Requirements
 
@@ -116,6 +131,7 @@ Exact path conventions for the short URL root (e.g. `/{code}` vs `/r/{code}`) ma
 - **Uniqueness:** Short codes must be unique; collisions must be handled safely.
 - **Security:** Credentials must be stored and verified securely; management endpoints must require authentication and authorization.
 - **Usability:** Creating a short URL and obtaining its QR code should require minimal steps for anonymous users.
+- **Internationalization:** UI and user-facing messages must be available in more than one language; default and fallback locale is `pt-BR`.
 
 ## Data Model (logical)
 
@@ -168,3 +184,6 @@ Exact path conventions for the short URL root (e.g. `/{code}` vs `/r/{code}`) ma
 - [ ] Authorized user can create a custom-named short URL
 - [ ] Authorized user can list, edit, and delete their URLs
 - [ ] Deleted short codes no longer redirect or show a preview
+- [ ] UI defaults to `pt-BR` when no locale is chosen
+- [ ] User can switch to another supported language and see translated UI/messages
+- [ ] Missing translations fall back to `pt-BR`

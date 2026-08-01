@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Repository layout is a single Node.js app: `src/`, `db/`, `docs/`, `docker/` (ISS-001)
+- TypeScript setup (`tsconfig.json`, build/dev scripts, `src/` in `.ts`) (ISS-003)
+- Repository layout is a single Node.js app: `src/`, `db/`, `docs/`, `docker/`
 
 ### Docs
 - Product specification (`docs/spec/spec.md`)
