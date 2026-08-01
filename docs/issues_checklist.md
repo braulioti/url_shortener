@@ -11,7 +11,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [x] **ISS-001** — Initialize repository layout (`src/`, `db/`, `docs/`, `docker/`)
 - [x] **ISS-002** — Create single Node.js app scaffold (`package.json`, entrypoint, basic HTTP server in `src/`)
 - [x] **ISS-003** — Implement the Node.js application with TypeScript (`tsconfig`, build/run scripts, convert `src/` to `.ts`)
-- [ ] **ISS-004** — Add UI shell within the same Node.js app (public pages served from `src/`)
+- [x] **ISS-004** — Add UI shell within the same Node.js app (public pages served from `src/`)
 - [ ] **ISS-005** — Add Dockerfile for the Node.js app under `docker/`
 - [ ] **ISS-006** — Add `docker-compose.yml` with services `app` (Node.js) and `db` (PostgreSQL)
 - [ ] **ISS-007** — Configure environment variables (DB credentials, ports, public base URL, auth secrets)

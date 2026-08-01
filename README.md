@@ -35,6 +35,9 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 ```text
 /
 ├── src/               # Single Node.js app (UI + API + redirect + QR)
+│   ├── public/        # Static assets (CSS, etc.)
+│   ├── views/         # HTML page templates
+│   └── http/          # Request routing and static serving
 ├── db/                # PostgreSQL migrations and seeds
 ├── docs/              # Specs and checklists
 ├── docker/            # Dockerfile and Compose-related assets
