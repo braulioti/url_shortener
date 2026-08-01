@@ -17,8 +17,8 @@ Anonymous users create short links and view preview/QR pages. Authenticated user
 ## Goals
 
 - Deliver UI, API, redirect, and QR generation in **one** Node.js application
-- Persist short-link and user data in PostgreSQL
-- Run the full stack with Docker Compose (app service + database)
+- Persist short-link and user data in an **external** PostgreSQL database
+- Run the application with Docker Compose (app service only; database is not containerized here)
 - Support public redirect and preview flows with low latency
 - Enforce authentication and ownership for management features
 
@@ -94,33 +94,32 @@ Responsibilities:
 
 ## Docker Architecture
 
-All runtime dependencies are defined with Docker Compose. Docker assets live under `docker/`.
+Docker assets live under `docker/`. Compose runs the **application only**. PostgreSQL is an **external** database (managed outside this repository’s Compose file).
 
 ### Services
 
 | Service | Image / build | Role |
 | --- | --- | --- |
-| `app` | Build from project Dockerfile (`docker/`) | UI, API, auth, redirect, QR |
-| `db` | Official PostgreSQL image | Relational data store |
+| `app` | Build from `docker/Dockerfile` | UI, API, auth, redirect, QR |
+
+There is **no** `db` service in Compose. Connection details for the external Postgres instance are supplied via environment variables (`DB_*`).
 
 ### Compose principles
 
 - The Node.js app is built from the project Dockerfile
-- PostgreSQL data is stored in a named Docker volume for persistence across restarts
-- Services communicate on an internal Docker network
-- The app connects to Postgres using Compose service DNS (`db`)
+- The app connects to an external PostgreSQL host reachable from the container network (e.g. host machine, managed cloud DB, or a DB on another Compose stack)
 - Environment variables configure ports, database credentials, session secrets, and public base URL (used when composing short URLs and QR content)
-- Only necessary ports are published to the host (app; database may stay internal-only in production-like setups)
+- Only the app HTTP port is published to the host
 
 ### Suggested topology
 
 ```text
-Docker Compose network
-├── app  → publishes HTTP port (e.g. 3000)
-└── db   → PostgreSQL (internal; optional host port for local tooling)
+Docker Compose
+└── app  → publishes HTTP port (e.g. 4000)
+         → connects to external PostgreSQL (DB_HOST / DB_PORT / …)
 ```
 
-Exact ports and image tags are defined at implementation time in Compose files under `docker/` (or a root Compose file that references `docker/`).
+Compose file: `docker-compose.yml` at the repository root (build context uses `docker/Dockerfile`).
 
 ## Application Boundaries
 
@@ -219,8 +218,8 @@ One `package.json` at the repository root (or under `src/` if preferred at imple
 
 ## Acceptance Criteria (architecture)
 
-- [ ] Stack is Docker + PostgreSQL + a single Node.js application
-- [ ] Full local environment starts via Docker Compose
+- [ ] Stack is Docker (app) + external PostgreSQL + a single Node.js application
+- [ ] App local environment starts via Docker Compose (without a Postgres container)
 - [ ] Only the Node.js app writes to PostgreSQL
 - [ ] Redirect and short-code uniqueness are enforced in the app/data layer
 - [ ] UI and API live in the same application

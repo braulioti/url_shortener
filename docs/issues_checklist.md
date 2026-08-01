@@ -12,11 +12,11 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [x] **ISS-002** — Create single Node.js app scaffold (`package.json`, entrypoint, basic HTTP server in `src/`)
 - [x] **ISS-003** — Implement the Node.js application with TypeScript (`tsconfig`, build/run scripts, convert `src/` to `.ts`)
 - [x] **ISS-004** — Add UI shell within the same Node.js app (public pages served from `src/`)
-- [ ] **ISS-005** — Add Dockerfile for the Node.js app under `docker/`
-- [ ] **ISS-006** — Add `docker-compose.yml` with services `app` (Node.js) and `db` (PostgreSQL)
-- [ ] **ISS-007** — Configure environment variables (DB credentials, ports, public base URL, auth secrets)
+- [x] **ISS-005** — Add Dockerfile for the Node.js app under `docker/`
+- [x] **ISS-006** — Add `docker-compose.yml` with service `app` (Node.js); PostgreSQL is external (no `db` service)
+- [x] **ISS-007** — Configure environment variables (DB credentials, ports, public base URL, auth secrets)
 - [x] **ISS-008** — Add `.env.example` and ensure secrets are not committed
-- [ ] **ISS-009** — Verify full stack starts with Docker Compose
+- [x] **ISS-009** — Verify app starts with Docker Compose
 
 ---
 
@@ -37,10 +37,10 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [ ] **ISS-010** — Create `db/migrations/001_create_users.sql` (`users` table)
 - [ ] **ISS-011** — Create `db/migrations/002_create_short_links.sql` (`short_links` table)
 - [ ] **ISS-012** — Ensure unique constraint on `short_links.short_code` and index on `owner_id`
-- [ ] **ISS-013** — Wire migrations into Docker Postgres bootstrap (init mount or migrate step)
+- [ ] **ISS-013** — Apply migrations to the external PostgreSQL (migrate step, CI, or documented `psql` flow — not Compose `db` init)
 - [ ] **ISS-014** — Create `db/seeds/001_authorized_users.sql` with pre-provisioned authorized users (hashed passwords only)
 - [ ] **ISS-015** — Document how to generate password hashes for seeds
-- [ ] **ISS-016** — Verify schema and seed apply cleanly on a fresh Compose volume
+- [ ] **ISS-016** — Verify schema and seed apply cleanly on the external PostgreSQL instance
 
 ---
 

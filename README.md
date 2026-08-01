@@ -7,8 +7,8 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 | Layer | Technology |
 | --- | --- |
 | Application (UI + API + redirect) | Node.js + TypeScript (single app) |
-| Database | PostgreSQL |
-| Runtime | Docker Compose |
+| Database | External PostgreSQL |
+| Runtime | Docker Compose (app only) |
 
 ## Features
 
@@ -40,7 +40,9 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 │   └── http/          # Request routing and static serving
 ├── db/                # PostgreSQL migrations and seeds
 ├── docs/              # Specs and checklists
-├── docker/            # Dockerfile and Compose-related assets
+├── docker/            # Dockerfile
+├── docker-compose.yml # App service only (external DB)
+├── .env.example
 ├── README.md
 └── CHANGELOG.md
 ```
@@ -58,7 +60,7 @@ npm run build
 npm start
 ```
 
-The server listens on `http://localhost:3000` (override with `PORT`).  
+The server listens on `http://localhost:4000` by default (`PORT` in `.env`).  
 `GET /health` returns `{ "status": "ok" }`.
 
 For development with TypeScript auto-reload:
@@ -75,11 +77,44 @@ npm run typecheck
 
 ### Docker Compose
 
-Still in progress (see checklist ISS-005+). When ready:
+PostgreSQL is **not** started by Compose. Point `DB_*` in `.env` at your external database. From the app container on Docker Desktop, use `DB_HOST=host.docker.internal` to reach Postgres on the host machine.
 
-1. Copy environment template (e.g. `.env.example` → `.env`) and fill in values
-2. Start the stack with Docker Compose
-3. Open the app URL published by Compose
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+App: `http://localhost:4000` (or your `PORT`).  
+Health: `GET /health`.
+
+Stop:
+
+```bash
+docker compose down
+```
+
+## Continuous integration
+
+GitHub Actions workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+| Event | Behavior |
+| --- | --- |
+| Push / PR on any branch other than deploy path | `npm` typecheck + build, Docker image build (no push) |
+| Push to `main` (e.g. after merge) | Same build, then push image to Docker Hub |
+
+### Docker Hub secrets
+
+Configure repository secrets:
+
+| Secret | Description |
+| --- | --- |
+| `DOCKERHUB_USERNAME` | Docker Hub username |
+| `DOCKERHUB_TOKEN` | Docker Hub access token (or password) |
+
+Published tags on `main`:
+
+- `{DOCKERHUB_USERNAME}/url-shortener:latest`
+- `{DOCKERHUB_USERNAME}/url-shortener:{git-sha}`
 
 ## License
 
