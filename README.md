@@ -6,10 +6,9 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | Node.js |
-| Backend (API + redirect) | Node.js |
-| Database | PostgreSQL |
-| Runtime | Docker Compose |
+| Application (UI + API + redirect) | Node.js + TypeScript (single app) |
+| Database | External PostgreSQL |
+| Runtime | Docker Compose (app only) |
 
 ## Features
 
@@ -31,28 +30,91 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 | [docs/issues_checklist.md](docs/issues_checklist.md) | Implementation backlog |
 | [CHANGELOG.md](CHANGELOG.md) | Project changelog |
 
-## Project layout (planned)
+## Project layout
 
 ```text
 /
-├── frontend/          # Node.js UI
-├── backend/           # Node.js API, auth, redirect, QR
+├── src/               # Single Node.js app (UI + API + redirect + QR)
+│   ├── public/        # Static assets (CSS, etc.)
+│   ├── views/         # HTML page templates
+│   └── http/          # Request routing and static serving
 ├── db/                # PostgreSQL migrations and seeds
 ├── docs/              # Specs and checklists
-├── docker-compose.yml
+├── docker/            # Dockerfile
+├── docker-compose.yml # App service only (external DB)
+├── .env.example
 ├── README.md
 └── CHANGELOG.md
 ```
 
 ## Getting started
 
-Implementation is in progress. When the stack is ready, the expected local flow is:
+### Local (without Docker)
 
-1. Copy environment template (e.g. `.env.example` → `.env`) and fill in values
-2. Start the stack with Docker Compose
-3. Open the frontend URL published by Compose
+Requires Node.js 20+.
 
-Exact commands will be added here once `docker-compose.yml` and app scaffolds exist.
+```bash
+cp .env.example .env
+npm install
+npm run build
+npm start
+```
+
+The server listens on `http://localhost:4000` by default (`PORT` in `.env`).  
+`GET /health` returns `{ "status": "ok" }`.
+
+For development with TypeScript auto-reload:
+
+```bash
+npm run dev
+```
+
+Type-check without emitting:
+
+```bash
+npm run typecheck
+```
+
+### Docker Compose
+
+PostgreSQL is **not** started by Compose. Point `DB_*` in `.env` at your external database. From the app container on Docker Desktop, use `DB_HOST=host.docker.internal` to reach Postgres on the host machine.
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+App: `http://localhost:4000` (or your `PORT`).  
+Health: `GET /health`.
+
+Stop:
+
+```bash
+docker compose down
+```
+
+## Continuous integration
+
+GitHub Actions workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+| Event | Behavior |
+| --- | --- |
+| Push / PR on any branch other than deploy path | `npm` typecheck + build, Docker image build (no push) |
+| Push to `main` (e.g. after merge) | Same build, then push image to Docker Hub |
+
+### Docker Hub secrets
+
+Configure repository secrets:
+
+| Secret | Description |
+| --- | --- |
+| `DOCKERHUB_USERNAME` | Docker Hub username |
+| `DOCKERHUB_TOKEN` | Docker Hub access token (or password) |
+
+Published tags on `main`:
+
+- `{DOCKERHUB_USERNAME}/url-shortener:latest`
+- `{DOCKERHUB_USERNAME}/url-shortener:{git-sha}`
 
 ## License
 

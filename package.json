@@ -1,0 +1,25 @@
+{
+  "name": "url-shortener",
+  "version": "0.1.0",
+  "private": true,
+  "description": "URL shortener with QR codes — single Node.js application",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && node scripts/copy-public.mjs",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}

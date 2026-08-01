@@ -24,6 +24,8 @@ Suggested location under the repository root:
 
 ```text
 /
+├── src/                          # Single Node.js application
+├── docker/                       # Dockerfile / Compose assets
 ├── db/
 │   ├── README.md                 # optional local notes (how to run scripts)
 │   ├── migrations/
@@ -32,6 +34,7 @@ Suggested location under the repository root:
 │   │   └── 003_indexes_and_constraints.sql   # if not already in 001/002
 │   └── seeds/
 │       └── 001_authorized_users.sql
+├── docs/
 └── ...
 ```
 
@@ -133,14 +136,14 @@ short_links
 └── updated_at
 ```
 
-## Bootstrap with Docker
+## Bootstrap with external PostgreSQL
 
 Aligned with [architecture.md](./architecture.md):
 
-- The `db` Compose service runs the official PostgreSQL image
-- On first volume initialization, Postgres can mount `db/migrations/` (and optionally `db/seeds/`) into `/docker-entrypoint-initdb.d/` **or** migrations can be applied by a dedicated migrate step started by Compose / CI
-- Data persists in a named Docker volume across container restarts
-- Re-running init scripts only applies automatically on an empty data directory; subsequent schema changes require ordered migrations
+- PostgreSQL runs **outside** this project’s Docker Compose (managed DB, local install, or another stack)
+- Apply `db/migrations/` (and optionally `db/seeds/`) with the chosen migration tooling or `psql` against the external instance
+- The app connects using `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`
+- From a Compose container on Docker Desktop, the host machine is typically reachable as `host.docker.internal` (set `DB_HOST` accordingly)
 
 ## Persistence Rules (normative)
 
@@ -165,4 +168,4 @@ Aligned with [architecture.md](./architecture.md):
 - [ ] `short_code` uniqueness is enforced in the database
 - [ ] `owner_id` is nullable and references `users` when set
 - [ ] Seed path exists for pre-provisioned authorized users without plain-text passwords in git
-- [ ] Database can be brought up via Docker Compose with schema applied
+- [ ] Schema and seeds can be applied to the external PostgreSQL instance
