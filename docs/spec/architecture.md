@@ -8,8 +8,7 @@ The system is a containerized web application with:
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | Node.js |
-| Backend (API + redirect) | Node.js |
+| Application (UI + API + redirect) | Node.js (single app) |
 | Database | PostgreSQL |
 | Runtime / packaging | Docker Compose |
 
@@ -17,9 +16,9 @@ Anonymous users create short links and view preview/QR pages. Authenticated user
 
 ## Goals
 
-- Keep frontend and backend as separate Node.js applications with clear boundaries
+- Deliver UI, API, redirect, and QR generation in **one** Node.js application
 - Persist short-link and user data in PostgreSQL
-- Run the full stack with Docker Compose (app services + database)
+- Run the full stack with Docker Compose (app service + database)
 - Support public redirect and preview flows with low latency
 - Enforce authentication and ownership for management features
 
@@ -29,18 +28,18 @@ Anonymous users create short links and view preview/QR pages. Authenticated user
 - Separate analytics/event pipeline
 - Message queues or background workers beyond what is needed for QR generation at request time
 - Public self-registration infrastructure
+- Separate frontend and backend deployable applications
 
 ## High-Level Architecture
 
 ```text
-┌─────────────┐     ┌──────────────────────┐     ┌────────────┐
-│   Browser   │────▶│  Frontend (Node.js)  │     │            │
-└─────────────┘     └──────────┬───────────┘     │            │
-                               │ HTTP            │ PostgreSQL │
-┌─────────────┐     ┌──────────▼───────────┐     │            │
-│   Clients   │────▶│  Backend (Node.js)   │────▶│            │
-│ (redirect / │     │  API + redirect      │     │            │
-│  QR scan)   │     └──────────────────────┘     └────────────┘
+┌─────────────┐     ┌──────────────────────────────┐     ┌────────────┐
+│   Browser   │────▶│  Node.js app                 │────▶│ PostgreSQL │
+└─────────────┘     │  UI + API + redirect + QR    │     └────────────┘
+┌─────────────┐     └──────────────────────────────┘
+│   Clients   │─────────────▶ (same app)
+│ (redirect / │
+│  QR scan)   │
 └─────────────┘
 ```
 
@@ -48,30 +47,24 @@ Anonymous users create short links and view preview/QR pages. Authenticated user
 
 | Actor | Entry | Responsibility |
 | --- | --- | --- |
-| Anonymous / public user | Frontend + Backend | Create short URL, view preview, follow redirect |
-| Authenticated user | Frontend + Backend | Sign in, manage owned URLs, custom short codes |
-| QR / short URL client | Backend | Resolve short code and redirect to original URL |
+| Anonymous / public user | Node.js app | Create short URL, view preview, follow redirect |
+| Authenticated user | Node.js app | Sign in, manage owned URLs, custom short codes |
+| QR / short URL client | Node.js app | Resolve short code and redirect to the original URL |
 
 ## Components
 
-### 1. Frontend (Node.js)
+### 1. Node.js application (`src/`)
 
-Responsibilities:
+A single process serves both the web UI and the HTTP API / redirect layer.
 
-- Public UI to submit an original URL and display the resulting short URL + QR code
-- Preview page rendering at `/v/{short_code}` (or consume backend data for that route, depending on rendering choice)
+**UI responsibilities:**
+
+- Public form to submit an original URL and display the resulting short URL + QR code
+- Preview page at `/v/{short_code}`
 - Sign-in screen for pre-provisioned users
 - Management UI: list, edit, and delete owned short links; create custom short codes
 
-Constraints:
-
-- Does not write directly to PostgreSQL
-- Talks to the backend over HTTP (JSON API)
-- Holds only session/token state needed for authenticated calls
-
-### 2. Backend (Node.js)
-
-Responsibilities:
+**API / server responsibilities:**
 
 - REST (or equivalent HTTP) API for create/list/edit/delete short links
 - Authentication (login) and authorization checks for management endpoints
@@ -82,13 +75,16 @@ Responsibilities:
 - Preview data for `/v/{short_code}`
 - Persistence via PostgreSQL
 
-Constraints:
+**Constraints:**
 
 - Single source of truth for business rules (validation, ownership, routing precedence)
 - Passwords stored only as secure hashes
 - Reserved routes take precedence over short-code resolution (see business rules)
+- Only this application writes to PostgreSQL
 
-### 3. PostgreSQL
+Internal module boundaries inside `src/` (e.g. `routes/`, `views/`, `services/`) may separate UI and API concerns without splitting into two apps.
+
+### 2. PostgreSQL
 
 Responsibilities:
 
@@ -98,48 +94,46 @@ Responsibilities:
 
 ## Docker Architecture
 
-All runtime dependencies are defined with Docker Compose.
+All runtime dependencies are defined with Docker Compose. Docker assets live under `docker/`.
 
 ### Services
 
 | Service | Image / build | Role |
 | --- | --- | --- |
-| `frontend` | Build from frontend Node.js app | Serves the web UI |
-| `backend` | Build from backend Node.js app | API, auth, redirect, QR |
+| `app` | Build from project Dockerfile (`docker/`) | UI, API, auth, redirect, QR |
 | `db` | Official PostgreSQL image | Relational data store |
 
 ### Compose principles
 
-- Frontend and backend are built from project Dockerfiles
+- The Node.js app is built from the project Dockerfile
 - PostgreSQL data is stored in a named Docker volume for persistence across restarts
 - Services communicate on an internal Docker network
-- Backend connects to Postgres using Compose service DNS (`db`)
+- The app connects to Postgres using Compose service DNS (`db`)
 - Environment variables configure ports, database credentials, session secrets, and public base URL (used when composing short URLs and QR content)
-- Only necessary ports are published to the host (frontend, backend; database may stay internal-only in production-like setups)
+- Only necessary ports are published to the host (app; database may stay internal-only in production-like setups)
 
 ### Suggested topology
 
 ```text
 Docker Compose network
-├── frontend  → publishes UI port (e.g. 3000)
-├── backend   → publishes API/redirect port (e.g. 4000)
-└── db        → PostgreSQL (internal; optional host port for local tooling)
+├── app  → publishes HTTP port (e.g. 3000)
+└── db   → PostgreSQL (internal; optional host port for local tooling)
 ```
 
-Exact ports and image tags are defined at implementation time in `docker-compose.yml`.
+Exact ports and image tags are defined at implementation time in Compose files under `docker/` (or a root Compose file that references `docker/`).
 
 ## Application Boundaries
 
 ### Public flows (no auth)
 
-1. **Create short link** — Frontend → `POST` backend → persist `ShortLink` → generate QR → return short URL + QR
-2. **Redirect** — Client hits short URL on backend → lookup `short_code` → HTTP redirect to `original_url`
-3. **Preview** — Client opens `/v/{short_code}` → backend (and/or frontend) loads link + QR → render preview (no automatic redirect)
+1. **Create short link** — UI → API handler → persist `ShortLink` → generate QR → return short URL + QR
+2. **Redirect** — Client hits short URL → lookup `short_code` → HTTP redirect to `original_url`
+3. **Preview** — Client opens `/v/{short_code}` → load link + QR → render preview (no automatic redirect)
 
 ### Authenticated flows
 
-1. **Login** — Frontend → backend verifies credentials → issues session/token
-2. **Custom create / CRUD** — Frontend → authenticated backend endpoints → ownership checks → PostgreSQL
+1. **Login** — UI → verify credentials → issue session/token
+2. **Custom create / CRUD** — Authenticated endpoints → ownership checks → PostgreSQL
 
 ## Routing Architecture
 
@@ -149,7 +143,7 @@ Routing precedence must match business rules:
 2. Preview: `/v/{short_code}`
 3. Short-code redirect for remaining path segments that match an existing code
 
-The **backend** owns redirect resolution and short-code lookup. The **frontend** owns interactive UI routes. In development and Docker, a reverse-proxy layer may be introduced later to unify a single public origin; the initial architecture allows frontend and backend on separate published ports.
+The Node.js app owns both UI routes and redirect resolution.
 
 ## Data Architecture
 
@@ -169,7 +163,7 @@ Aligned with the product spec:
 
 ### QR codes
 
-- Generated by the backend when a short link is created or when the short code changes
+- Generated when a short link is created or when the short code changes
 - Encode the public short URL (not the original URL)
 - May be returned as image bytes, data URL, or a dedicated endpoint; storage of binary QR blobs in the database is optional (regeneration from short URL is acceptable)
 
@@ -187,23 +181,24 @@ Aligned with the product spec:
 
 ```text
 /
-├── docker-compose.yml
-├── docs/spec/          # product + architecture docs
-├── frontend/           # Node.js frontend
-├── backend/            # Node.js backend (API + redirect + QR)
-└── ...
+├── src/                # Single Node.js application
+├── db/                 # PostgreSQL migrations and seeds
+├── docs/               # Product + architecture docs
+├── docker/             # Dockerfile and Compose-related assets
+├── README.md
+└── CHANGELOG.md
 ```
 
-Each app (`frontend`, `backend`) has its own `package.json`, Dockerfile, and source tree.
+One `package.json` at the repository root (or under `src/` if preferred at implementation time). Docker build context points at the single app.
 
 ## Configuration
 
 | Variable area | Examples | Used by |
 | --- | --- | --- |
-| Database | host, port, name, user, password | Backend |
-| HTTP ports | frontend port, backend port | Compose / apps |
-| Public base URL | e.g. `https://short.example` or local origin | Backend (short URL + QR payload) |
-| Auth secrets | session/JWT secret | Backend |
+| Database | host, port, name, user, password | App |
+| HTTP port | app listen port | Compose / app |
+| Public base URL | e.g. `https://short.example` or local origin | App (short URL + QR payload) |
+| Auth secrets | session/JWT secret | App |
 
 ## Quality Attributes
 
@@ -213,7 +208,7 @@ Each app (`frontend`, `backend`) has its own `package.json`, Dockerfile, and sou
 | Performance | Redirect path is a simple keyed lookup; keep redirect handler lean |
 | Security | Hashed credentials, authZ on management, reserved-path protection |
 | Operability | One-command local bring-up via Docker Compose |
-| Maintainability | Clear frontend/backend split; business rules enforced in backend |
+| Maintainability | Single app with clear internal modules; business rules enforced in the server layer |
 
 ## Out of Scope (for later)
 
@@ -224,9 +219,9 @@ Each app (`frontend`, `backend`) has its own `package.json`, Dockerfile, and sou
 
 ## Acceptance Criteria (architecture)
 
-- [ ] Stack is Docker + PostgreSQL + Node.js frontend + Node.js backend
+- [ ] Stack is Docker + PostgreSQL + a single Node.js application
 - [ ] Full local environment starts via Docker Compose
-- [ ] Backend is the only component writing to PostgreSQL
-- [ ] Redirect and short-code uniqueness are enforced in the backend/data layer
-- [ ] Frontend consumes backend APIs for create, preview data, auth, and management
+- [ ] Only the Node.js app writes to PostgreSQL
+- [ ] Redirect and short-code uniqueness are enforced in the app/data layer
+- [ ] UI and API live in the same application
 - [ ] Secrets and DB credentials are supplied through environment configuration

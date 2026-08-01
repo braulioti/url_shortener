@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Repository layout is a single Node.js app: `src/`, `db/`, `docs/`, `docker/` (ISS-001)
+
+### Docs
 - Product specification (`docs/spec/spec.md`)
 - Business rules (`docs/spec/business-rules.md`)
 - Architecture document (`docs/spec/architecture.md`)

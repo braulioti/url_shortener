@@ -6,8 +6,7 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | Node.js |
-| Backend (API + redirect) | Node.js |
+| Application (UI + API + redirect) | Node.js (single app) |
 | Database | PostgreSQL |
 | Runtime | Docker Compose |
 
@@ -31,15 +30,14 @@ A simple URL shortener that turns a long URL into a compact short link and a QR 
 | [docs/issues_checklist.md](docs/issues_checklist.md) | Implementation backlog |
 | [CHANGELOG.md](CHANGELOG.md) | Project changelog |
 
-## Project layout (planned)
+## Project layout
 
 ```text
 /
-├── frontend/          # Node.js UI
-├── backend/           # Node.js API, auth, redirect, QR
+├── src/               # Single Node.js app (UI + API + redirect + QR)
 ├── db/                # PostgreSQL migrations and seeds
 ├── docs/              # Specs and checklists
-├── docker-compose.yml
+├── docker/            # Dockerfile and Compose-related assets
 ├── README.md
 └── CHANGELOG.md
 ```
@@ -50,9 +48,9 @@ Implementation is in progress. When the stack is ready, the expected local flow 
 
 1. Copy environment template (e.g. `.env.example` → `.env`) and fill in values
 2. Start the stack with Docker Compose
-3. Open the frontend URL published by Compose
+3. Open the app URL published by Compose
 
-Exact commands will be added here once `docker-compose.yml` and app scaffolds exist.
+Exact commands will be added here once Compose and the app scaffold exist.
 
 ## License
 

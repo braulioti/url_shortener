@@ -8,11 +8,11 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ## Epic 1 — Project foundation
 
-- [ ] **ISS-001** — Initialize repository layout (`frontend/`, `backend/`, `db/`, `docs/`)
-- [ ] **ISS-002** — Create backend Node.js app scaffold (`package.json`, entrypoint, basic HTTP server)
-- [ ] **ISS-003** — Create frontend Node.js app scaffold (`package.json`, entrypoint, basic UI shell)
-- [ ] **ISS-004** — Add Dockerfiles for `frontend` and `backend`
-- [ ] **ISS-005** — Add `docker-compose.yml` with services `frontend`, `backend`, and `db` (PostgreSQL)
+- [x] **ISS-001** — Initialize repository layout (`src/`, `db/`, `docs/`, `docker/`)
+- [ ] **ISS-002** — Create single Node.js app scaffold (`package.json`, entrypoint, basic HTTP server in `src/`)
+- [ ] **ISS-003** — Add UI shell within the same Node.js app (public pages served from `src/`)
+- [ ] **ISS-004** — Add Dockerfile for the Node.js app under `docker/`
+- [ ] **ISS-005** — Add `docker-compose.yml` with services `app` (Node.js) and `db` (PostgreSQL)
 - [ ] **ISS-006** — Configure environment variables (DB credentials, ports, public base URL, auth secrets)
 - [ ] **ISS-007** — Add `.env.example` and ensure secrets are not committed
 - [ ] **ISS-008** — Verify full stack starts with Docker Compose
@@ -31,9 +31,9 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ---
 
-## Epic 3 — Backend core infrastructure
+## Epic 3 — App core infrastructure
 
-- [ ] **ISS-016** — Connect backend to PostgreSQL (connection config + health check)
+- [ ] **ISS-016** — Connect the Node.js app to PostgreSQL (connection config + health check)
 - [ ] **ISS-017** — Define API error response shape (validation, conflict, not found, unauthorized)
 - [ ] **ISS-018** — Implement request validation helpers for URLs and short codes
 - [ ] **ISS-019** — Define reserved path segments (`v`, auth, API, management, static)
@@ -70,11 +70,11 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ---
 
-## Epic 7 — Preview page (backend + frontend)
+## Epic 7 — Preview page
 
-- [ ] **ISS-035** — Backend endpoint or data for preview by `short_code` (short URL + QR) — BR-PREV-002
+- [ ] **ISS-035** — Endpoint or data for preview by `short_code` (short URL + QR) — BR-PREV-002
 - [ ] **ISS-036** — Return not found for unknown short codes on preview — BR-PREV-003
-- [ ] **ISS-037** — Frontend page at `/v/{short_code}` displaying short URL and QR — BR-PREV-001
+- [ ] **ISS-037** — Page at `/v/{short_code}` displaying short URL and QR — BR-PREV-001
 - [ ] **ISS-038** — Ensure preview does **not** auto-redirect to the original URL — BR-PREV-005
 - [ ] **ISS-039** — Ensure preview is publicly accessible — BR-PREV-004
 
@@ -87,13 +87,13 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [ ] **ISS-042** — Issue session or token after successful login
 - [ ] **ISS-043** — Protect management endpoints (require authentication) — BR-AUTH-005
 - [ ] **ISS-044** — Deny management actions for authenticated but unauthorized accounts — BR-AUTH-003, BR-AUTH-004
-- [ ] **ISS-045** — Frontend sign-in page for pre-provisioned users — BR-AUTH-001
-- [ ] **ISS-046** — Persist and send auth credentials/token from frontend on management calls
+- [ ] **ISS-045** — Sign-in page for pre-provisioned users — BR-AUTH-001
+- [ ] **ISS-046** — Persist and send auth credentials/token on management calls
 - [ ] **ISS-047** — Implement logout (invalidate session / clear client auth state)
 
 ---
 
-## Epic 9 — Authenticated short links & management (backend)
+## Epic 9 — Authenticated short links & management (API)
 
 - [ ] **ISS-048** — Allow authenticated authorized users to create links with custom short codes — BR-CODE-007
 - [ ] **ISS-049** — Validate custom short codes (non-empty, no `/`, no whitespace, length/charset rules) — BR-CODE-010
@@ -110,7 +110,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ---
 
-## Epic 10 — Frontend public UX
+## Epic 10 — Public UX
 
 - [ ] **ISS-060** — Home/create form: submit original URL
 - [ ] **ISS-061** — Show validation errors for invalid/missing URLs
@@ -120,7 +120,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ---
 
-## Epic 11 — Frontend management UX
+## Epic 11 — Management UX
 
 - [ ] **ISS-065** — Management area accessible only when signed in (and authorized)
 - [ ] **ISS-066** — Create form with optional custom short code field
@@ -139,7 +139,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [ ] **ISS-074** — End-to-end: `/v/{short_code}` shows short URL + QR; unknown code → not found
 - [ ] **ISS-075** — End-to-end: authorized user login → custom code → list/edit/delete
 - [ ] **ISS-076** — End-to-end: deleted code no longer redirects or previews
-- [ ] **ISS-077** — Backend automated tests for URL validation, code generation, uniqueness, authZ, ownership
+- [ ] **ISS-077** — Automated tests for URL validation, code generation, uniqueness, authZ, ownership
 - [ ] **ISS-078** — Basic README: how to run with Docker Compose
 - [ ] **ISS-079** — Final pass against product acceptance criteria in [spec.md](./spec/spec.md)
 
@@ -148,7 +148,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 ## Suggested implementation order
 
 1. Epic 1 → Epic 2 (foundation + database)
-2. Epic 3 → Epic 4 → Epic 5 → Epic 6 (backend public core)
+2. Epic 3 → Epic 4 → Epic 5 → Epic 6 (public core)
 3. Epic 7 + Epic 10 (preview + public UI)
 4. Epic 8 → Epic 9 → Epic 11 (auth + management)
 5. Epic 12 (integration and acceptance)

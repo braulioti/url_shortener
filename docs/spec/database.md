@@ -24,6 +24,8 @@ Suggested location under the repository root:
 
 ```text
 /
+├── src/                          # Single Node.js application
+├── docker/                       # Dockerfile / Compose assets
 ├── db/
 │   ├── README.md                 # optional local notes (how to run scripts)
 │   ├── migrations/
@@ -32,6 +34,7 @@ Suggested location under the repository root:
 │   │   └── 003_indexes_and_constraints.sql   # if not already in 001/002
 │   └── seeds/
 │       └── 001_authorized_users.sql
+├── docs/
 └── ...
 ```
 
