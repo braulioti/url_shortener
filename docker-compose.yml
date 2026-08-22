@@ -1,6 +1,10 @@
 # Runs the Node.js app only. PostgreSQL is external (not managed by Compose).
+#
+# Local:  docker compose up --build
+# Server: APP_IMAGE=user/url-shortener:1.0.0 docker compose pull && docker compose up -d
 services:
   app:
+    image: ${APP_IMAGE:-url-shortener:local}
     build:
       context: .
       dockerfile: docker/Dockerfile

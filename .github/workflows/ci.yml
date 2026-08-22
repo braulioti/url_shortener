@@ -59,6 +59,7 @@ jobs:
 
             IMAGE="${USERNAME}/url-shortener"
             echo "push=true" >> "$GITHUB_OUTPUT"
+            echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
             echo "tags=${IMAGE}:latest,${IMAGE}:${VERSION}" >> "$GITHUB_OUTPUT"
           else
             echo "push=false" >> "$GITHUB_OUTPUT"
@@ -73,6 +74,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -81,3 +83,42 @@ jobs:
           tags: ${{ steps.docker.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Copy compose file to server
+        if: steps.docker.outputs.push == 'true'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          source: docker-compose.yml
+          target: ${{ secrets.DEPLOY_FOLDER }}
+          overwrite: true
+
+      - name: Deploy on remote server
+        if: steps.docker.outputs.push == 'true'
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          APP_IMAGE: ${{ steps.docker.outputs.image }}:${{ steps.docker.outputs.version }}
+          DEPLOY_FOLDER: ${{ secrets.DEPLOY_FOLDER }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          envs: APP_IMAGE,DEPLOY_FOLDER,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
+          script: |
+            set -euo pipefail
+            cd "$DEPLOY_FOLDER"
+
+            if [[ ! -f .env ]]; then
+              echo "Missing .env in $DEPLOY_FOLDER — create it on the server before deploying."
+              exit 1
+            fi
+
+            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            export APP_IMAGE
+            docker compose pull app
+            docker compose up -d app
+            docker logout || true

@@ -100,21 +100,31 @@ GitHub Actions workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 | Event | Behavior |
 | --- | --- |
 | Push / PR on any branch other than deploy path | `npm` typecheck + build, Docker image build (no push) |
-| Push to `main` (e.g. after merge) | Same build, then push image to Docker Hub |
+| Push to `main` (e.g. after merge) | Build, push image to Docker Hub, copy `docker-compose.yml` to the server, pull and restart the app |
 
-### Docker Hub secrets
-
-Configure repository secrets:
+### Repository secrets
 
 | Secret | Description |
 | --- | --- |
 | `DOCKERHUB_USERNAME` | Docker Hub username |
 | `DOCKERHUB_TOKEN` | Docker Hub access token (or password) |
+| `DEPLOY_HOST` | Remote server hostname or IP |
+| `DEPLOY_USERNAME` | SSH login |
+| `DEPLOY_PASSWORD` | SSH password |
+| `DEPLOY_FOLDER` | Absolute path on the server (e.g. `/opt/url-shortener`) |
 
 Published tags on `main` (version from `package.json`):
 
 - `{DOCKERHUB_USERNAME}/url-shortener:latest`
 - `{DOCKERHUB_USERNAME}/url-shortener:{version}` (e.g. `1.0.0`)
+
+### Remote server prep
+
+On the server, once:
+
+1. Install Docker and Docker Compose plugin.
+2. Create `DEPLOY_FOLDER` and put a production `.env` there (from `.env.example`).
+3. Ensure the SSH user can run `docker` / `docker compose`.
 
 ## License
 
