@@ -29,7 +29,9 @@
     "hint": "Visitantes podem encurtar sem conta. Códigos personalizados ficam na área autenticada.",
     "resultTitle": "Link criado",
     "shortUrlLabel": "URL curta:",
-    "shortCodeLabel": "Código:"
+    "shortCodeLabel": "Código:",
+    "qrLabel": "QR Code:",
+    "qrAlt": "QR code da URL curta"
   },
   "login": {
     "title": "Entrar",

@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { createAnonymousShortLink } from "../short-links/service.js";
 import type { Locale } from "../i18n/index.js";
 import { t } from "../i18n/index.js";
+import { buildQrCodeUrl } from "../short-links/urls.js";
 import { readFormBody } from "./body.js";
 import { sendApiError, sendJson } from "./errors.js";
 
@@ -88,6 +89,7 @@ export async function handleShortenRequest(
     shortCode: result.shortLink.short_code,
     shortUrl: result.shortUrl,
     originalUrl: result.shortLink.original_url,
+    qrCodeUrl: buildQrCodeUrl(result.shortLink.short_code),
   };
 
   if (wantsHtmlResponse(req)) {

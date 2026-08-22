@@ -228,6 +228,14 @@ a:hover {
   font-family: ui-monospace, monospace;
 }
 
+.qr-image {
+  display: block;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.5rem;
+}
+
 .auth-page {
   max-width: 28rem;
 }

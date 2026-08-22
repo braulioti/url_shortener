@@ -86,9 +86,9 @@ All authenticated application routes live under the `/admin` prefix (e.g. `/admi
 
 ## Epic 5 — QR code
 
-- [ ] **ISS-029** — Generate QR code encoding the **short URL** (not original) — BR-QR-001, BR-QR-002
-- [ ] **ISS-030** — Include QR in create response (image bytes, data URL, or dedicated endpoint)
-- [ ] **ISS-031** — Regenerate QR when an authenticated user changes the short code — BR-QR-003
+- [x] **ISS-029** — Generate QR code encoding the **short URL** (not original) — BR-QR-001, BR-QR-002
+- [x] **ISS-030** — Include QR in create response (image bytes, data URL, or dedicated endpoint)
+- [x] **ISS-031** — Regenerate QR when an authenticated user changes the short code — BR-QR-003 *(on-the-fly generation from current short URL)*
 
 ---
 

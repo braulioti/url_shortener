@@ -3,6 +3,7 @@ import { config } from "../config.js";
 import type { Locale } from "../i18n/index.js";
 import { createTranslator } from "../i18n/index.js";
 import { adminRoutes } from "../routes/paths.js";
+import { qrCodeApiPath } from "../short-links/urls.js";
 import { escapeHtml } from "./html.js";
 import { renderLayout } from "./layout.js";
 
@@ -87,6 +88,14 @@ export function renderHomePage(
         <p><strong>${escapeHtml(translate("home.shortCodeLabel"))}</strong>
           <code>${escapeHtml(options.shortCode)}</code>
         </p>
+        <p><strong>${escapeHtml(translate("home.qrLabel"))}</strong></p>
+        <img
+          class="qr-image"
+          src="${escapeHtml(qrCodeApiPath(options.shortCode))}"
+          width="256"
+          height="256"
+          alt="${escapeHtml(translate("home.qrAlt"))}"
+        />
       </section>
     `
       : "";

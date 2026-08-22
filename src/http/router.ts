@@ -9,6 +9,7 @@ import {
 import { isAdminPath } from "../routes/paths.js";
 import { renderHomePage, renderNotFoundPage } from "../views/pages.js";
 import { handleAdminRequest } from "./admin-router.js";
+import { handleQrCodeRequest } from "./qr-handler.js";
 import { handleShortCodeRedirect } from "./redirect-handler.js";
 import { sendJson } from "./errors.js";
 import { handleShortenRequest } from "./shorten-handler.js";
@@ -114,6 +115,12 @@ export async function handleRequest(
 
   if (req.method === "POST" && pathname === "/api/shorten") {
     await handleShortenRequest(req, res, locale);
+    return;
+  }
+
+  const qrMatch = pathname.match(/^\/api\/qr\/([^/]+)$/);
+  if (req.method === "GET" && qrMatch) {
+    await handleQrCodeRequest(res, decodeURIComponent(qrMatch[1]!), locale);
     return;
   }
 

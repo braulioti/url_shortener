@@ -29,7 +29,9 @@
     "hint": "Visitors can shorten without an account. Custom codes are available in the authenticated area.",
     "resultTitle": "Link created",
     "shortUrlLabel": "Short URL:",
-    "shortCodeLabel": "Code:"
+    "shortCodeLabel": "Code:",
+    "qrLabel": "QR code:",
+    "qrAlt": "QR code for the short URL"
   },
   "login": {
     "title": "Sign in",
