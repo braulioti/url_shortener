@@ -112,6 +112,7 @@ GitHub Actions workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 | `DEPLOY_USERNAME` | SSH login |
 | `DEPLOY_PASSWORD` | SSH password |
 | `DEPLOY_FOLDER` | Absolute path on the server (e.g. `/opt/url-shortener`) |
+| `DEPLOY_ENV` | Full production `.env` contents (written to the server on each deploy) |
 
 Published tags on `main` (version from `package.json`):
 
@@ -123,8 +124,16 @@ Published tags on `main` (version from `package.json`):
 On the server, once:
 
 1. Install Docker and Docker Compose plugin.
-2. Create `DEPLOY_FOLDER` and put a production `.env` there (from `.env.example`).
+2. Create `DEPLOY_FOLDER`.
 3. Ensure the SSH user can run `docker` / `docker compose`.
+
+Set `DEPLOY_ENV` with the production env (based on `.env.example`):
+
+```powershell
+gh secret set DEPLOY_ENV < .env.production
+```
+
+Or paste the multiline value in **Settings → Secrets → Actions → New repository secret**.
 
 ## License
 

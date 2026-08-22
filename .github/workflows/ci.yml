@@ -101,19 +101,24 @@ jobs:
         env:
           APP_IMAGE: ${{ steps.docker.outputs.image }}:${{ steps.docker.outputs.version }}
           DEPLOY_FOLDER: ${{ secrets.DEPLOY_FOLDER }}
+          DEPLOY_ENV: ${{ secrets.DEPLOY_ENV }}
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           password: ${{ secrets.DEPLOY_PASSWORD }}
-          envs: APP_IMAGE,DEPLOY_FOLDER,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
+          envs: APP_IMAGE,DEPLOY_FOLDER,DEPLOY_ENV,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
           script: |
             set -euo pipefail
             cd "$DEPLOY_FOLDER"
 
-            if [[ ! -f .env ]]; then
-              echo "Missing .env in $DEPLOY_FOLDER — create it on the server before deploying."
+            if [[ -n "${DEPLOY_ENV:-}" ]]; then
+              umask 077
+              printf '%s\n' "$DEPLOY_ENV" > .env
+            elif [[ ! -f .env ]]; then
+              echo "Missing .env in $DEPLOY_FOLDER."
+              echo "Create the file on the server or set the DEPLOY_ENV repository secret."
               exit 1
             fi
 
