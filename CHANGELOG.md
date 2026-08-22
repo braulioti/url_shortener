@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI: build on all branches; push image to Docker Hub on `main`
 - Docker packaging: `docker/Dockerfile`, root `docker-compose.yml` (app only; external PostgreSQL) (ISS-005, ISS-006, ISS-009)
 - Central `config` for env vars (port, locale, public URL, DB, session) (ISS-007)
+- Added Run Workflow
 
 ### Docs
 - Product specification (`docs/spec/spec.md`)
