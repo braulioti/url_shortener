@@ -208,6 +208,26 @@ a:hover {
   font-size: 0.9rem;
 }
 
+.result-card {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(91, 141, 239, 0.35);
+  border-radius: var(--radius);
+  background: rgba(91, 141, 239, 0.1);
+}
+
+.result-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.result-card p {
+  margin: 0.35rem 0;
+}
+
+.result-card code {
+  font-family: ui-monospace, monospace;
+}
+
 .auth-page {
   max-width: 28rem;
 }

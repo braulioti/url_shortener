@@ -26,7 +26,10 @@
     "urlLabel": "URL original",
     "urlPlaceholder": "https://exemplo.com/meu-link-muito-longo",
     "submit": "Encurtar",
-    "hint": "Visitantes podem encurtar sem conta. Códigos personalizados ficam na área autenticada."
+    "hint": "Visitantes podem encurtar sem conta. Códigos personalizados ficam na área autenticada.",
+    "resultTitle": "Link criado",
+    "shortUrlLabel": "URL curta:",
+    "shortCodeLabel": "Código:"
   },
   "login": {
     "title": "Entrar",
@@ -86,6 +89,7 @@
   },
   "errors": {
     "shortenNotImplemented": "A criação de links curtos será implementada em breve.",
+    "shortCodeCollision": "Não foi possível gerar um código único. Tente novamente.",
     "validationRequiredUrl": "Informe uma URL original.",
     "validationInvalidUrl": "Informe uma URL absoluta válida com http ou https.",
     "conflictShortCode": "Este código curto já está em uso.",

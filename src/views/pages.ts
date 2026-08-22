@@ -58,8 +58,38 @@ function changePasswordErrorKey(error: string | null | undefined): string | null
   return "errors.notFound";
 }
 
-export function renderHomePage(locale: Locale): string {
+export function renderHomePage(
+  locale: Locale,
+  options: {
+    error?: string | null;
+    shortCode?: string;
+    shortUrl?: string;
+  } = {},
+): string {
   const translate = createTranslator(locale);
+
+  const errorKey =
+    options.error === "required"
+      ? "errors.validationRequiredUrl"
+      : options.error === "invalid"
+        ? "errors.validationInvalidUrl"
+        : null;
+  const errorHtml = errorKey ? renderAlert(translate(errorKey)) : "";
+
+  const resultHtml =
+    options.shortCode && options.shortUrl
+      ? `
+      <section class="result-card" aria-live="polite">
+        <h2>${escapeHtml(translate("home.resultTitle"))}</h2>
+        <p><strong>${escapeHtml(translate("home.shortUrlLabel"))}</strong>
+          <a href="${escapeHtml(options.shortUrl)}">${escapeHtml(options.shortUrl)}</a>
+        </p>
+        <p><strong>${escapeHtml(translate("home.shortCodeLabel"))}</strong>
+          <code>${escapeHtml(options.shortCode)}</code>
+        </p>
+      </section>
+    `
+      : "";
 
   return renderLayout({
     page: "home",
@@ -69,6 +99,8 @@ export function renderHomePage(locale: Locale): string {
       <section class="hero">
         <h1>${escapeHtml(translate("meta.brand"))}</h1>
         <p class="lede">${escapeHtml(translate("home.lede"))}</p>
+        ${errorHtml}
+        ${resultHtml}
         <form class="shorten-form" method="post" action="/api/shorten" novalidate>
           <label for="original-url">${escapeHtml(translate("home.urlLabel"))}</label>
           <div class="field-row">

@@ -64,22 +64,23 @@ All authenticated application routes live under the `/admin` prefix (e.g. `/admi
 ## Epic 3 — App core infrastructure
 
 - [x] **ISS-017** — Connect the Node.js app to PostgreSQL (connection config + health check)
-- [ ] **ISS-018** — Define API error response shape (validation, conflict, not found, unauthorized)
-- [ ] **ISS-019** — Implement request validation helpers for URLs and short codes
+- [x] **ISS-018** — Define API error response shape (validation, conflict, not found, unauthorized)
+- [x] **ISS-019** — Implement request validation helpers for URLs and short codes
 - [x] **ISS-020** — Define reserved path segments (`admin`, `v`, auth/API routes); block `admin` as short code — BR-CODE-009
-- [ ] **ISS-021** — Configure public base URL usage for composing short URLs
+- [x] **ISS-021** — Configure public base URL usage for composing short URLs
 
 ---
 
 ## Epic 4 — Anonymous short links
 
-- [ ] **ISS-022** — Validate original URL on create (required, absolute, `http`/`https`) — BR-URL-001, BR-URL-002
-- [ ] **ISS-023** — Normalize original URL before persistence (trim) — BR-URL-003
-- [ ] **ISS-024** — Generate random 6-character short codes (`a-z`, `0-9`) — BR-CODE-002–004
-- [ ] **ISS-025** — Enforce uniqueness with collision retry (and safe retry limit) — BR-CODE-005, BR-CODE-006
-- [ ] **ISS-026** — Persist anonymous `ShortLink` with `owner_id = NULL` — BR-OWN-002
-- [ ] **ISS-027** — Expose `POST` API endpoint to create short links anonymously
-- [ ] **ISS-028** — Return short URL (and related payload) to the client on success
+- [x] **ISS-022** — Validate original URL on create (required, absolute, `http`/`https`) — BR-URL-001, BR-URL-002
+- [x] **ISS-023** — Normalize original URL before persistence (trim) — BR-URL-003
+- [x] **ISS-024** — Generate random 6-character short codes (`a-z`, `0-9`) — BR-CODE-002–004
+- [x] **ISS-025** — Enforce uniqueness with collision retry (and safe retry limit) — BR-CODE-005, BR-CODE-006
+- [x] **ISS-026** — Persist anonymous `ShortLink` with `owner_id = NULL` — BR-OWN-002
+- [x] **ISS-027** — Expose `POST` API endpoint to create short links anonymously
+- [x] **ISS-028** — Return short URL (and related payload) to the client on success
+- [x] **ISS-101** — Public redirect: `GET /{short_code}` looks up link and redirects to `original_url`; unknown codes → not found; no auth — BR-RED-001, BR-RED-002, BR-RED-003, BR-RED-005, BR-ROUTE-*
 
 ---
 
@@ -93,10 +94,12 @@ All authenticated application routes live under the `/admin` prefix (e.g. `/admi
 
 ## Epic 6 — Redirect
 
-- [ ] **ISS-032** — Implement short-code lookup and HTTP redirect to `original_url` — BR-RED-001, BR-RED-002
-- [ ] **ISS-033** — Return not found for unknown / deleted short codes — BR-RED-003
-- [ ] **ISS-034** — Ensure redirect route does not require authentication — BR-RED-005
-- [ ] **ISS-035** — Enforce routing precedence: reserved routes (`/admin/...`, `/v/...`) before short-code redirect — BR-ROUTE-*
+Implemented in Epic 4 (**ISS-101**).
+
+- [x] **ISS-032** — Implement short-code lookup and HTTP redirect to `original_url` — BR-RED-001, BR-RED-002
+- [x] **ISS-033** — Return not found for unknown / deleted short codes — BR-RED-003
+- [x] **ISS-034** — Ensure redirect route does not require authentication — BR-RED-005
+- [x] **ISS-035** — Enforce routing precedence: reserved routes (`/admin/...`, `/v/...`) before short-code redirect — BR-ROUTE-*
 
 ---
 

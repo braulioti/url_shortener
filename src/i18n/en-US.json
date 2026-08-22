@@ -26,7 +26,10 @@
     "urlLabel": "Original URL",
     "urlPlaceholder": "https://example.com/my-very-long-link",
     "submit": "Shorten",
-    "hint": "Visitors can shorten without an account. Custom codes are available in the authenticated area."
+    "hint": "Visitors can shorten without an account. Custom codes are available in the authenticated area.",
+    "resultTitle": "Link created",
+    "shortUrlLabel": "Short URL:",
+    "shortCodeLabel": "Code:"
   },
   "login": {
     "title": "Sign in",
@@ -86,6 +89,7 @@
   },
   "errors": {
     "shortenNotImplemented": "Short link creation will be implemented soon.",
+    "shortCodeCollision": "Could not generate a unique code. Please try again.",
     "validationRequiredUrl": "Please provide an original URL.",
     "validationInvalidUrl": "Please provide a valid absolute URL with http or https.",
     "conflictShortCode": "This short code is already in use.",

@@ -4,27 +4,20 @@ import {
   isLocale,
   localeCookie,
   resolveLocale,
-  t,
   type Locale,
 } from "../i18n/index.js";
 import { isAdminPath } from "../routes/paths.js";
 import { renderHomePage, renderNotFoundPage } from "../views/pages.js";
 import { handleAdminRequest } from "./admin-router.js";
+import { handleShortCodeRedirect } from "./redirect-handler.js";
+import { sendJson } from "./errors.js";
+import { handleShortenRequest } from "./shorten-handler.js";
 import { tryServeStatic } from "./static.js";
 
 function sendHtml(res: ServerResponse, status: number, html: string): void {
   const body = Buffer.from(html, "utf8");
   res.writeHead(status, {
     "Content-Type": "text/html; charset=utf-8",
-    "Content-Length": body.length,
-  });
-  res.end(body);
-}
-
-function sendJson(res: ServerResponse, status: number, payload: unknown): void {
-  const body = Buffer.from(JSON.stringify(payload), "utf8");
-  res.writeHead(status, {
-    "Content-Type": "application/json; charset=utf-8",
     "Content-Length": body.length,
   });
   res.end(body);
@@ -51,6 +44,18 @@ function safeRedirectTarget(req: IncomingMessage): string {
   }
 
   return "/";
+}
+
+function homePageOptions(url: URL): {
+  error?: string | null;
+  shortCode?: string;
+  shortUrl?: string;
+} {
+  return {
+    error: url.searchParams.get("error"),
+    shortCode: url.searchParams.get("shortCode") ?? undefined,
+    shortUrl: url.searchParams.get("shortUrl") ?? undefined,
+  };
 }
 
 export async function handleRequest(
@@ -103,15 +108,21 @@ export async function handleRequest(
   }
 
   if (req.method === "GET" && pathname === "/") {
-    sendHtml(res, 200, renderHomePage(locale));
+    sendHtml(res, 200, renderHomePage(locale, homePageOptions(url)));
     return;
   }
 
   if (req.method === "POST" && pathname === "/api/shorten") {
-    sendJson(res, 501, {
-      error: "not_implemented",
-      message: t(locale, "errors.shortenNotImplemented"),
-    });
+    await handleShortenRequest(req, res, locale);
+    return;
+  }
+
+  const redirectResult = await handleShortCodeRedirect(req, res, pathname);
+  if (redirectResult === "redirected") {
+    return;
+  }
+  if (redirectResult === "not_found") {
+    sendHtml(res, 404, renderNotFoundPage(locale));
     return;
   }
 
