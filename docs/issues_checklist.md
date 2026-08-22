@@ -38,9 +38,26 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [x] **ISS-011** — Create `db/migrations/002_create_short_links.sql` (`short_links` table)
 - [x] **ISS-012** — Ensure unique constraint on `short_links.short_code` and index on `owner_id`
 - [x] **ISS-013** — Apply migrations to the external PostgreSQL (on app startup and `npm run migrate`)
-- [ ] **ISS-014** — Create `db/seeds/001_authorized_users.sql` with pre-provisioned authorized users (hashed passwords only)
-- [ ] **ISS-015** — Document how to generate password hashes for seeds
-- [ ] **ISS-016** — Verify schema and seed apply cleanly on the external PostgreSQL instance
+- [x] **ISS-014** — Auto-create database if missing (`ensureDatabaseExists`) before migrations
+- [x] **ISS-015** — Track applied migrations in `schema_migrations` (idempotent runner)
+- [x] **ISS-016** — Bootstrap default admin user on startup (`admin`, `user_admin=true`, hashed password)
+
+---
+
+## Epic 2b — Login & user registration (UI)
+
+All authenticated application routes live under the `/admin` prefix (e.g. `/admin/sign-in`, `/admin/sign-up`, `/admin/manage`). The short code `admin` is reserved and cannot be used for URLs.
+
+- [x] **ISS-089** — Add `ALLOW_EXTERNAL_USER_REGISTRATION` env flag (`true` / `false`) in `config`, `.env.example`, and docs
+- [x] **ISS-090** — Login page UI at `/admin/sign-in` (username + password form)
+- [x] **ISS-091** — Login flow: authenticate against `users`, verify password hash, issue session cookie — BR-AUTH-002, BR-AUTH-006
+- [x] **ISS-092** — User registration page UI at `/admin/sign-up` (username + password + confirmation)
+- [x] **ISS-093** — Registration handler: create user with hashed password; external users get `authorized=true`, `user_admin=false`
+- [x] **ISS-094** — When `ALLOW_EXTERNAL_USER_REGISTRATION=false`, hide registration link and return not found on `/admin/sign-up`
+- [x] **ISS-095** — When `ALLOW_EXTERNAL_USER_REGISTRATION=true`, expose registration link from login page and allow `/admin/sign-up`
+- [x] **ISS-096** — i18n for login and registration screens and validation errors (pt-BR + en-US)
+- [x] **ISS-097** — Logout via `POST /admin/sign-out` clears session and returns to sign-in
+- [x] **ISS-099** — Require password change on first login at `/admin/change-password` (`must_change_password` on new users)
 
 ---
 
@@ -49,7 +66,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [x] **ISS-017** — Connect the Node.js app to PostgreSQL (connection config + health check)
 - [ ] **ISS-018** — Define API error response shape (validation, conflict, not found, unauthorized)
 - [ ] **ISS-019** — Implement request validation helpers for URLs and short codes
-- [ ] **ISS-020** — Define reserved path segments (`v`, auth, API, management, static)
+- [x] **ISS-020** — Define reserved path segments (`admin`, `v`, auth/API routes); block `admin` as short code — BR-CODE-009
 - [ ] **ISS-021** — Configure public base URL usage for composing short URLs
 
 ---
@@ -79,7 +96,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 - [ ] **ISS-032** — Implement short-code lookup and HTTP redirect to `original_url` — BR-RED-001, BR-RED-002
 - [ ] **ISS-033** — Return not found for unknown / deleted short codes — BR-RED-003
 - [ ] **ISS-034** — Ensure redirect route does not require authentication — BR-RED-005
-- [ ] **ISS-035** — Enforce routing precedence: reserved routes and `/v/...` before short-code redirect — BR-ROUTE-*
+- [ ] **ISS-035** — Enforce routing precedence: reserved routes (`/admin/...`, `/v/...`) before short-code redirect — BR-ROUTE-*
 
 ---
 
@@ -95,14 +112,14 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ## Epic 8 — Authentication & authorization
 
-- [ ] **ISS-041** — Implement login with username + password against `users` — BR-AUTH-002
-- [ ] **ISS-042** — Verify password against stored hash (never store plain text) — BR-AUTH-006
-- [ ] **ISS-043** — Issue session or token after successful login
+- [x] **ISS-041** — Implement login with username + password against `users` — BR-AUTH-002
+- [x] **ISS-042** — Verify password against stored hash (never store plain text) — BR-AUTH-006
+- [x] **ISS-043** — Issue session cookie after successful login
 - [ ] **ISS-044** — Protect management endpoints (require authentication) — BR-AUTH-005
 - [ ] **ISS-045** — Deny management actions for authenticated but unauthorized accounts — BR-AUTH-003, BR-AUTH-004
-- [ ] **ISS-046** — Sign-in page for pre-provisioned users — BR-AUTH-001
+- [x] **ISS-046** — Sign-in page at `/admin/sign-in` — BR-AUTH-001
 - [ ] **ISS-047** — Persist and send auth credentials/token on management calls
-- [ ] **ISS-048** — Implement logout (invalidate session / clear client auth state)
+- [x] **ISS-048** — Implement logout (`POST /admin/sign-out` clears session)
 
 ---
 
@@ -110,7 +127,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 - [ ] **ISS-049** — Allow authenticated authorized users to create links with custom short codes — BR-CODE-007
 - [ ] **ISS-050** — Validate custom short codes (non-empty, no `/`, no whitespace, length/charset rules) — BR-CODE-010
-- [ ] **ISS-051** — Reject custom codes that collide with reserved paths — BR-CODE-009
+- [ ] **ISS-051** — Reject custom codes that collide with reserved paths (including `admin`) — BR-CODE-009
 - [ ] **ISS-052** — Reject custom codes that already exist (conflict) — BR-CODE-008
 - [ ] **ISS-053** — If authenticated user omits custom code, generate random 6-char code — BR-CODE-011
 - [ ] **ISS-054** — Set `owner_id` on authenticated creates — BR-OWN-001
@@ -135,13 +152,13 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ## Epic 11 — Management UX
 
-- [ ] **ISS-066** — Management area accessible only when signed in (and authorized)
+- [x] **ISS-066** — Management area at `/admin/manage` accessible only when signed in (and authorized)
 - [ ] **ISS-067** — Create form with optional custom short code field
 - [ ] **ISS-068** — List owned short links
 - [ ] **ISS-069** — Edit owned short link (original URL and/or short code)
 - [ ] **ISS-070** — Delete owned short link with confirmation
 - [ ] **ISS-071** — Surface conflict/validation errors for custom codes and reserved paths
-- [ ] **ISS-072** — Redirect unauthenticated users to sign-in when accessing management
+- [x] **ISS-072** — Redirect unauthenticated users to `/admin/sign-in` when accessing management
 
 ---
 
@@ -159,18 +176,29 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ---
 
+## Epic 13 — Improvements
+
+Optional UX and polish items after core features are stable.
+
+- [ ] **ISS-098** — Replace language text links in the header with flag icons (pt-BR / en-US), keeping accessible labels and current locale selection behavior
+- [ ] **ISS-100** — Allow branding via environment variables: configurable display name and primary/theme color (e.g. `APP_DISPLAY_NAME`, `APP_THEME_COLOR`), applied across public and admin UI
+
+---
+
 ## Suggested implementation order
 
 1. Epic 1 → Epic 1b → Epic 2 (foundation + i18n + database)
-2. Epic 3 → Epic 4 → Epic 5 → Epic 6 (public core)
-3. Epic 7 + Epic 10 (preview + public UI)
-4. Epic 8 → Epic 9 → Epic 11 (auth + management)
-5. Epic 12 (integration and acceptance)
+2. Epic 2b → Epic 3 (login/registration UI + app core)
+3. Epic 4 → Epic 5 → Epic 6 (public core)
+4. Epic 7 + Epic 10 (preview + public UI)
+5. Epic 8 → Epic 9 → Epic 11 (auth backend overlap + management)
+6. Epic 12 (integration and acceptance)
+7. Epic 13 (improvements / polish)
 
 ## Out of scope (do not open as project issues yet)
 
 - Click analytics / dashboards
-- Public self-registration and password recovery
+- Password recovery flows
 - Bulk import/export
 - Link expiration
 - Rate limiting / abuse prevention policies

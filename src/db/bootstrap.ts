@@ -18,8 +18,8 @@ export async function ensureAdminUser(): Promise<void> {
   const passwordHash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, BCRYPT_ROUNDS);
 
   await pool.query(
-    `INSERT INTO users (username, password_hash, authorized, user_admin)
-     VALUES ($1, $2, true, true)`,
+    `INSERT INTO users (username, password_hash, authorized, user_admin, must_change_password)
+     VALUES ($1, $2, true, true, true)`,
     [DEFAULT_ADMIN_USERNAME, passwordHash],
   );
 

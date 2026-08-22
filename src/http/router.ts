@@ -7,12 +7,9 @@ import {
   t,
   type Locale,
 } from "../i18n/index.js";
-import {
-  renderHomePage,
-  renderLoginPage,
-  renderManagePage,
-  renderNotFoundPage,
-} from "../views/pages.js";
+import { isAdminPath } from "../routes/paths.js";
+import { renderHomePage, renderNotFoundPage } from "../views/pages.js";
+import { handleAdminRequest } from "./admin-router.js";
 import { tryServeStatic } from "./static.js";
 
 function sendHtml(res: ServerResponse, status: number, html: string): void {
@@ -92,18 +89,21 @@ export async function handleRequest(
     return;
   }
 
+  if (isAdminPath(pathname) || pathname === "/entrar" || pathname === "/gerenciar") {
+    const handled = await handleAdminRequest(
+      req,
+      res,
+      pathname,
+      locale,
+      sendHtml,
+    );
+    if (handled) {
+      return;
+    }
+  }
+
   if (req.method === "GET" && pathname === "/") {
     sendHtml(res, 200, renderHomePage(locale));
-    return;
-  }
-
-  if (req.method === "GET" && pathname === "/entrar") {
-    sendHtml(res, 200, renderLoginPage(locale));
-    return;
-  }
-
-  if (req.method === "GET" && pathname === "/gerenciar") {
-    sendHtml(res, 200, renderManagePage(locale));
     return;
   }
 

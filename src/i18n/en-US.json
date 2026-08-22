@@ -8,7 +8,8 @@
     "ariaLabel": "Main",
     "shorten": "Shorten",
     "manage": "Manage",
-    "login": "Sign in"
+    "login": "Sign in",
+    "signUp": "Sign up"
   },
   "locale": {
     "ariaLabel": "Language",
@@ -30,13 +31,52 @@
   "login": {
     "title": "Sign in",
     "description": "Access the Vortius management area.",
-    "body": "Accounts are provisioned in advance. The sign-in form will be connected in upcoming steps."
+    "lede": "Use your credentials to access the admin area.",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account",
+    "errors": {
+      "invalidCredentials": "Invalid username or password.",
+      "unauthorized": "This account is not authorized to access the system."
+    }
+  },
+  "signUp": {
+    "title": "Create account",
+    "description": "Register to manage your short links.",
+    "lede": "Fill in the details below to create your account.",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "passwordConfirmLabel": "Confirm password",
+    "submit": "Register",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "errors": {
+      "validation": "Please fill in all required fields.",
+      "passwordMismatch": "Passwords do not match.",
+      "usernameTaken": "This username is already taken."
+    }
+  },
+  "changePassword": {
+    "title": "Set a new password",
+    "description": "Create a new password to complete your first sign-in.",
+    "lede": "For security, set a new password before continuing.",
+    "passwordLabel": "New password",
+    "passwordConfirmLabel": "Confirm new password",
+    "submit": "Save new password",
+    "errors": {
+      "validation": "Please enter a new password.",
+      "passwordMismatch": "Passwords do not match.",
+      "updateFailed": "Could not update the password. Please try again."
+    }
   },
   "manage": {
     "title": "Manage links",
     "description": "Manage your short links in Vortius.",
-    "body": "Here you will list, edit, and delete your links. This area will require authentication in upcoming steps.",
-    "goToLogin": "Go to Sign in"
+    "body": "Here you will list, edit, and delete your links.",
+    "signedInAs": "Signed in as",
+    "signOut": "Sign out"
   },
   "notFound": {
     "title": "Not found",

@@ -8,7 +8,8 @@
     "ariaLabel": "Principal",
     "shorten": "Encurtar",
     "manage": "Gerenciar",
-    "login": "Entrar"
+    "login": "Entrar",
+    "signUp": "Cadastro"
   },
   "locale": {
     "ariaLabel": "Idioma",
@@ -30,13 +31,52 @@
   "login": {
     "title": "Entrar",
     "description": "Acesse a área de gerenciamento do Vortius.",
-    "body": "Contas são provisionadas com antecedência. O formulário de autenticação será conectado nas próximas etapas."
+    "lede": "Use suas credenciais para acessar a área administrativa.",
+    "usernameLabel": "Usuário",
+    "passwordLabel": "Senha",
+    "submit": "Entrar",
+    "noAccount": "Não tem conta?",
+    "createAccount": "Criar conta",
+    "errors": {
+      "invalidCredentials": "Usuário ou senha inválidos.",
+      "unauthorized": "Esta conta não está autorizada a acessar o sistema."
+    }
+  },
+  "signUp": {
+    "title": "Criar conta",
+    "description": "Cadastre-se para gerenciar seus links curtos.",
+    "lede": "Preencha os dados abaixo para criar sua conta.",
+    "usernameLabel": "Usuário",
+    "passwordLabel": "Senha",
+    "passwordConfirmLabel": "Confirmar senha",
+    "submit": "Cadastrar",
+    "haveAccount": "Já tem conta?",
+    "signInLink": "Entrar",
+    "errors": {
+      "validation": "Preencha todos os campos obrigatórios.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "usernameTaken": "Este usuário já está em uso."
+    }
+  },
+  "changePassword": {
+    "title": "Definir nova senha",
+    "description": "Crie uma nova senha para concluir seu primeiro acesso.",
+    "lede": "Por segurança, defina uma nova senha antes de continuar.",
+    "passwordLabel": "Nova senha",
+    "passwordConfirmLabel": "Confirmar nova senha",
+    "submit": "Salvar nova senha",
+    "errors": {
+      "validation": "Informe a nova senha.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "updateFailed": "Não foi possível atualizar a senha. Tente novamente."
+    }
   },
   "manage": {
     "title": "Gerenciar links",
     "description": "Gerencie seus links curtos no Vortius.",
-    "body": "Aqui você listará, editará e excluirá seus links. Esta área exigirá autenticação nas próximas etapas.",
-    "goToLogin": "Ir para Entrar"
+    "body": "Aqui você listará, editará e excluirá seus links.",
+    "signedInAs": "Conectado como",
+    "signOut": "Sair"
   },
   "notFound": {
     "title": "Não encontrado",
