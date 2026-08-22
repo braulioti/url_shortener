@@ -2,8 +2,14 @@ import type { SessionUser } from "../auth/session.js";
 import { config } from "../config.js";
 import type { Locale } from "../i18n/index.js";
 import { createTranslator } from "../i18n/index.js";
-import { adminRoutes } from "../routes/paths.js";
-import { qrCodeApiPath } from "../short-links/urls.js";
+import { adminRoutes, manageEditPath } from "../routes/paths.js";
+import type { PaginatedShortLinks, ShortLinkRecord } from "../short-links/repository.js";
+import {
+  buildShortLinkListQueryString,
+  type ParsedShortLinkListQuery,
+  type ShortLinkSortField,
+} from "../short-links/list-query.js";
+import { buildShortUrl, qrCodeApiPath } from "../short-links/urls.js";
 import { escapeHtml } from "./html.js";
 import { renderLayout } from "./layout.js";
 
@@ -57,6 +63,32 @@ function changePasswordErrorKey(error: string | null | undefined): string | null
     return "changePassword.errors.updateFailed";
   }
   return "errors.notFound";
+}
+
+function linkFormErrorKey(error: string | null | undefined): string | null {
+  if (!error) {
+    return null;
+  }
+
+  if (error === "required") {
+    return "errors.validationRequiredUrl";
+  }
+  if (error === "invalid") {
+    return "errors.validationInvalidUrl";
+  }
+  if (error === "reserved") {
+    return "errors.validationReservedShortCode";
+  }
+  if (error === "conflict") {
+    return "errors.conflictShortCode";
+  }
+  if (error === "too_long") {
+    return "errors.validationDescriptionTooLong";
+  }
+  if (error === "not_found") {
+    return "errors.notFound";
+  }
+  return null;
 }
 
 export function renderHomePage(
@@ -267,21 +299,244 @@ export function renderChangePasswordPage(
   });
 }
 
-export function renderManagePage(locale: Locale, session: SessionUser): string {
+export function renderManagePage(
+  locale: Locale,
+  session: SessionUser,
+  options: {
+    links: PaginatedShortLinks;
+    query: ParsedShortLinkListQuery;
+    error?: string | null;
+  },
+): string {
   const translate = createTranslator(locale);
+  const { links, query } = options;
+
+  const errorKey = linkFormErrorKey(options.error);
+  const errorHtml = errorKey ? renderAlert(translate(errorKey)) : "";
+
+  const dateFormatter = new Intl.DateTimeFormat(
+    locale === "pt-BR" ? "pt-BR" : "en-US",
+    { dateStyle: "short", timeStyle: "short" },
+  );
+
+  function manageUrl(nextQuery: ParsedShortLinkListQuery): string {
+    return `${adminRoutes.manage}?${buildShortLinkListQueryString(nextQuery)}`;
+  }
+
+  function sortLink(field: ShortLinkSortField, label: string): string {
+    const nextOrder =
+      query.sortBy === field && query.sortOrder === "desc" ? "asc" : "desc";
+    const href = manageUrl({
+      ...query,
+      page: 1,
+      sortBy: field,
+      sortOrder: nextOrder,
+    });
+    const indicator =
+      query.sortBy === field
+        ? query.sortOrder === "desc"
+          ? " ↓"
+          : " ↑"
+        : "";
+    return `<a href="${escapeHtml(href)}">${escapeHtml(label)}${indicator}</a>`;
+  }
+
+  const rowsHtml =
+    links.items.length === 0
+      ? `<tr><td colspan="6">${escapeHtml(translate("manage.emptyList"))}</td></tr>`
+      : links.items
+          .map((link) => {
+            const shortUrl = buildShortUrl(link.short_code);
+            const description = link.description ?? translate("manage.noDescription");
+            const editPath = manageEditPath(link.id);
+            const deletePath = `/admin/manage/delete/${link.id}`;
+            const deleteConfirm = translate("manage.deleteConfirm").replace(/'/g, "\\'");
+            return `
+              <tr>
+                <td><code>${escapeHtml(link.short_code)}</code></td>
+                <td class="text-cell" title="${escapeHtml(description)}">${escapeHtml(description)}</td>
+                <td class="url-cell">
+                  <a href="${escapeHtml(shortUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(shortUrl)}</a>
+                </td>
+                <td class="url-cell" title="${escapeHtml(link.original_url)}">${escapeHtml(link.original_url)}</td>
+                <td>${escapeHtml(dateFormatter.format(link.created_at))}</td>
+                <td class="actions-cell">
+                  <a href="${escapeHtml(editPath)}">${escapeHtml(translate("manage.edit"))}</a>
+                  <form method="post" action="${escapeHtml(deletePath)}" class="inline-form" onsubmit="return confirm('${deleteConfirm}')">
+                    <button type="submit" class="link-button">${escapeHtml(translate("manage.delete"))}</button>
+                  </form>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+
+  const paginationHtml =
+    links.totalPages > 1
+      ? `
+        <nav class="pagination" aria-label="${escapeHtml(translate("manage.paginationLabel"))}">
+          ${
+            query.page > 1
+              ? `<a href="${escapeHtml(manageUrl({ ...query, page: query.page - 1 }))}">${escapeHtml(translate("manage.paginationPrevious"))}</a>`
+              : `<span class="pagination-disabled">${escapeHtml(translate("manage.paginationPrevious"))}</span>`
+          }
+          <span class="pagination-info">${escapeHtml(
+            translate("manage.paginationInfo")
+              .replace("{page}", String(query.page))
+              .replace("{totalPages}", String(links.totalPages))
+              .replace("{total}", String(links.total)),
+          )}</span>
+          ${
+            query.page < links.totalPages
+              ? `<a href="${escapeHtml(manageUrl({ ...query, page: query.page + 1 }))}">${escapeHtml(translate("manage.paginationNext"))}</a>`
+              : `<span class="pagination-disabled">${escapeHtml(translate("manage.paginationNext"))}</span>`
+          }
+        </nav>
+      `
+      : links.total > 0
+        ? `<p class="pagination-summary">${escapeHtml(
+            translate("manage.totalLinks").replace("{total}", String(links.total)),
+          )}</p>`
+        : "";
 
   return renderLayout({
     page: "manage",
     locale,
     description: translate("manage.description"),
     body: `
-      <section class="page">
+      <section class="page manage-page">
         <h1>${escapeHtml(translate("manage.title"))}</h1>
         <p>${escapeHtml(translate("manage.signedInAs"))} <strong>${escapeHtml(session.username)}</strong></p>
-        <p>${escapeHtml(translate("manage.body"))}</p>
-        <form method="post" action="${adminRoutes.signOut}">
+
+        <section class="manage-create-section" aria-labelledby="manage-create-heading">
+          <h2 id="manage-create-heading">${escapeHtml(translate("manage.createTitle"))}</h2>
+          ${errorHtml}
+          <form class="shorten-form manage-create-form" method="post" action="/api/short-links" novalidate>
+            <label for="manage-original-url">${escapeHtml(translate("manage.urlLabel"))}</label>
+            <input
+              id="manage-original-url"
+              name="originalUrl"
+              type="url"
+              inputmode="url"
+              autocomplete="url"
+              placeholder="${escapeHtml(translate("home.urlPlaceholder"))}"
+              required
+            />
+            <label for="manage-description">${escapeHtml(translate("manage.descriptionLabel"))}</label>
+            <input
+              id="manage-description"
+              name="description"
+              type="text"
+              maxlength="255"
+              placeholder="${escapeHtml(translate("manage.descriptionPlaceholder"))}"
+            />
+            <label for="manage-short-code">${escapeHtml(translate("manage.shortCodeLabel"))}</label>
+            <input
+              id="manage-short-code"
+              name="shortCode"
+              type="text"
+              maxlength="64"
+              pattern="[A-Za-z0-9_-]+"
+              placeholder="${escapeHtml(translate("manage.shortCodePlaceholder"))}"
+            />
+            <p class="hint">${escapeHtml(translate("manage.shortCodeHint"))}</p>
+            <button type="submit">${escapeHtml(translate("manage.createSubmit"))}</button>
+          </form>
+        </section>
+
+        <section class="link-list-section" aria-labelledby="manage-list-heading">
+          <h2 id="manage-list-heading">${escapeHtml(translate("manage.listTitle"))}</h2>
+          <div class="table-wrap">
+            <table class="link-table">
+              <thead>
+                <tr>
+                  <th scope="col">${sortLink("short_code", translate("manage.columnShortCode"))}</th>
+                  <th scope="col">${sortLink("description", translate("manage.columnDescription"))}</th>
+                  <th scope="col">${escapeHtml(translate("manage.columnShortUrl"))}</th>
+                  <th scope="col">${escapeHtml(translate("manage.columnOriginalUrl"))}</th>
+                  <th scope="col">${sortLink("created_at", translate("manage.columnCreatedAt"))}</th>
+                  <th scope="col">${escapeHtml(translate("manage.columnActions"))}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+              </tbody>
+            </table>
+          </div>
+          ${paginationHtml}
+        </section>
+
+        <form method="post" action="${adminRoutes.signOut}" class="manage-sign-out">
           <button type="submit" class="button-secondary">${escapeHtml(translate("manage.signOut"))}</button>
         </form>
+      </section>
+    `,
+  });
+}
+
+export function renderEditLinkPage(
+  locale: Locale,
+  session: SessionUser,
+  options: {
+    link: ShortLinkRecord;
+    error?: string | null;
+  },
+): string {
+  const translate = createTranslator(locale);
+  const { link } = options;
+  const errorKey =
+    options.error === "invalid"
+      ? "errors.validationInvalidShortCode"
+      : linkFormErrorKey(options.error);
+  const errorHtml = errorKey ? renderAlert(translate(errorKey)) : "";
+  const editPath = manageEditPath(link.id);
+
+  return renderLayout({
+    page: "manage",
+    locale,
+    description: translate("manage.editDescription"),
+    body: `
+      <section class="page manage-page">
+        <h1>${escapeHtml(translate("manage.editTitle"))}</h1>
+        <p>${escapeHtml(translate("manage.signedInAs"))} <strong>${escapeHtml(session.username)}</strong></p>
+        <p><a href="${adminRoutes.manage}">${escapeHtml(translate("manage.backToList"))}</a></p>
+
+        <section class="manage-create-section" aria-labelledby="manage-edit-heading">
+          <h2 id="manage-edit-heading">${escapeHtml(translate("manage.editTitle"))}</h2>
+          ${errorHtml}
+          <form class="shorten-form manage-create-form" method="post" action="${escapeHtml(editPath)}" novalidate>
+            <label for="edit-short-code">${escapeHtml(translate("manage.shortCodeLabel"))}</label>
+            <input
+              id="edit-short-code"
+              name="shortCode"
+              type="text"
+              maxlength="64"
+              pattern="[A-Za-z0-9_-]+"
+              value="${escapeHtml(link.short_code)}"
+              required
+            />
+            <label for="edit-original-url">${escapeHtml(translate("manage.urlLabel"))}</label>
+            <input
+              id="edit-original-url"
+              name="originalUrl"
+              type="url"
+              inputmode="url"
+              autocomplete="url"
+              value="${escapeHtml(link.original_url)}"
+              required
+            />
+            <label for="edit-description">${escapeHtml(translate("manage.descriptionLabel"))}</label>
+            <input
+              id="edit-description"
+              name="description"
+              type="text"
+              maxlength="255"
+              value="${escapeHtml(link.description ?? "")}"
+              placeholder="${escapeHtml(translate("manage.descriptionPlaceholder"))}"
+            />
+            <button type="submit">${escapeHtml(translate("manage.save"))}</button>
+          </form>
+        </section>
       </section>
     `,
   });

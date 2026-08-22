@@ -7,6 +7,10 @@ export const adminRoutes = {
   manage: "/admin/manage",
 } as const;
 
+export function manageEditPath(linkId: number): string {
+  return `/admin/manage/edit/${linkId}`;
+}
+
 export function postAuthRedirect(user: {
   mustChangePassword: boolean;
 }): string {

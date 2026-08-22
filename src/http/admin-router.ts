@@ -16,15 +16,23 @@ import {
 } from "../auth/users.js";
 import { config } from "../config.js";
 import type { Locale } from "../i18n/index.js";
-import { adminRoutes, postAuthRedirect } from "../routes/paths.js";
+import { adminRoutes, manageEditPath, postAuthRedirect } from "../routes/paths.js";
+import { parseShortLinkListQuery } from "../short-links/list-query.js";
+import { listShortLinksByOwner } from "../short-links/repository.js";
+import { getOwnedShortLink } from "../short-links/service.js";
 import {
   renderChangePasswordPage,
+  renderEditLinkPage,
   renderLoginPage,
   renderManagePage,
   renderNotFoundPage,
   renderSignUpPage,
 } from "../views/pages.js";
 import { readFormBody } from "./body.js";
+import {
+  handleDeleteShortLinkRequest,
+  handleUpdateShortLinkRequest,
+} from "./short-links-item-handler.js";
 
 type HtmlResponder = (res: ServerResponse, status: number, html: string) => void;
 
@@ -240,7 +248,89 @@ export async function handleAdminRequest(
       return true;
     }
 
-    sendHtml(res, 200, renderManagePage(locale, session));
+    const manageUrl = new URL(req.url ?? adminRoutes.manage, "http://localhost");
+    const query = parseShortLinkListQuery(manageUrl.searchParams);
+    const links = await listShortLinksByOwner(session.userId, query);
+    const error = manageUrl.searchParams.get("error");
+
+    sendHtml(
+      res,
+      200,
+      renderManagePage(locale, session, { links, query, error }),
+    );
+    return true;
+  }
+
+  const editMatch = pathname.match(/^\/admin\/manage\/edit\/(\d+)$/);
+  if (editMatch && req.method === "GET") {
+    const session = getSessionUser(req);
+    if (!session) {
+      res.writeHead(302, { Location: adminRoutes.signIn });
+      res.end();
+      return true;
+    }
+
+    if (session.mustChangePassword) {
+      res.writeHead(302, { Location: adminRoutes.changePassword });
+      res.end();
+      return true;
+    }
+
+    const linkId = Number.parseInt(editMatch[1]!, 10);
+    const linkResult = await getOwnedShortLink(session.userId, linkId);
+    if (!linkResult.ok) {
+      sendHtml(res, 404, renderNotFoundPage(locale));
+      return true;
+    }
+
+    const editUrl = new URL(req.url ?? manageEditPath(linkId), "http://localhost");
+    sendHtml(
+      res,
+      200,
+      renderEditLinkPage(locale, session, {
+        link: linkResult.shortLink,
+        error: editUrl.searchParams.get("error"),
+      }),
+    );
+    return true;
+  }
+
+  if (editMatch && req.method === "POST") {
+    const session = getSessionUser(req);
+    if (!session) {
+      res.writeHead(302, { Location: adminRoutes.signIn });
+      res.end();
+      return true;
+    }
+
+    const linkId = Number.parseInt(editMatch[1]!, 10);
+    await handleUpdateShortLinkRequest(
+      req,
+      res,
+      locale,
+      linkId,
+      manageEditPath(linkId),
+    );
+    return true;
+  }
+
+  const deleteMatch = pathname.match(/^\/admin\/manage\/delete\/(\d+)$/);
+  if (deleteMatch && req.method === "POST") {
+    const session = getSessionUser(req);
+    if (!session) {
+      res.writeHead(302, { Location: adminRoutes.signIn });
+      res.end();
+      return true;
+    }
+
+    const linkId = Number.parseInt(deleteMatch[1]!, 10);
+    await handleDeleteShortLinkRequest(
+      req,
+      res,
+      locale,
+      linkId,
+      adminRoutes.manage,
+    );
     return true;
   }
 

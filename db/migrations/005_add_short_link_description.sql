@@ -1,0 +1,2 @@
+ALTER TABLE short_links
+  ADD COLUMN IF NOT EXISTS description TEXT NULL;

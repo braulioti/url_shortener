@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Anonymous short link creation: URL validation, random 6-character codes, collision retry, `POST /api/shorten`, and home-page success feedback (Epic 4)
 - Public redirect: `GET /{short_code}` resolves to the stored original URL (Epic 4, ISS-101)
 - QR code generation encoding the short URL, `GET /api/qr/{short_code}` PNG endpoint, and `qrCodeUrl` in create response (Epic 5)
+- Paginated, sorted list of owned short links via `GET /api/short-links` and `/admin/manage` (Epic 9, ISS-102)
+- Optional description field on owned short links with `POST /api/short-links` (Epic 9, ISS-103)
+- Full CRUD for owned short links: create (optional custom code), read, update, delete via API and `/admin/manage` UI (Epic 9 / Epic 11)
 - API error response shape and URL validation helpers (Epic 3)
 - Public base URL helper for composing short URLs (`PUBLIC_BASE_URL`)
 - `users` table migration with `user_admin` flag; default admin user (`admin` / hashed password) created on startup

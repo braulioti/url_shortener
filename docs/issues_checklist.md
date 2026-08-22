@@ -105,11 +105,11 @@ Implemented in Epic 4 (**ISS-101**).
 
 ## Epic 7 — Preview page
 
-- [ ] **ISS-036** — Endpoint or data for preview by `short_code` (short URL + QR) — BR-PREV-002
-- [ ] **ISS-037** — Return not found for unknown short codes on preview — BR-PREV-003
-- [ ] **ISS-038** — Page at `/v/{short_code}` displaying short URL and QR — BR-PREV-001
-- [ ] **ISS-039** — Ensure preview does **not** auto-redirect to the original URL — BR-PREV-005
-- [ ] **ISS-040** — Ensure preview is publicly accessible — BR-PREV-004
+- [x] **ISS-036** — Endpoint or data for preview by `short_code` (short URL + QR) — BR-PREV-002
+- [x] **ISS-037** — Return not found for unknown short codes on preview — BR-PREV-003
+- [x] **ISS-038** — Page at `/v/{short_code}` displaying short URL and QR — BR-PREV-001
+- [x] **ISS-039** — Ensure preview does **not** auto-redirect to the original URL — BR-PREV-005
+- [x] **ISS-040** — Ensure preview is publicly accessible — BR-PREV-004
 
 ---
 
@@ -128,18 +128,20 @@ Implemented in Epic 4 (**ISS-101**).
 
 ## Epic 9 — Authenticated short links & management (API)
 
-- [ ] **ISS-049** — Allow authenticated authorized users to create links with custom short codes — BR-CODE-007
-- [ ] **ISS-050** — Validate custom short codes (non-empty, no `/`, no whitespace, length/charset rules) — BR-CODE-010
-- [ ] **ISS-051** — Reject custom codes that collide with reserved paths (including `admin`) — BR-CODE-009
-- [ ] **ISS-052** — Reject custom codes that already exist (conflict) — BR-CODE-008
-- [ ] **ISS-053** — If authenticated user omits custom code, generate random 6-char code — BR-CODE-011
-- [ ] **ISS-054** — Set `owner_id` on authenticated creates — BR-OWN-001
-- [ ] **ISS-055** — List endpoint: return only links owned by the current user — BR-OWN-003
-- [ ] **ISS-056** — Edit endpoint: update `original_url` and/or `short_code` for owned links — BR-OWN-004, BR-OWN-006
-- [ ] **ISS-057** — Re-validate original URL and short code on edit — BR-URL-004, BR-OWN-007
-- [ ] **ISS-058** — Delete endpoint: hard-delete owned link; code becomes reusable — BR-OWN-005, BR-OWN-008
-- [ ] **ISS-059** — Deny edit/delete of links not owned by the user — BR-OWN-004, BR-OWN-005
-- [ ] **ISS-060** — Do not expose anonymous links in management list — BR-OWN-009
+- [x] **ISS-049** — Allow authenticated authorized users to create links with custom short codes — BR-CODE-007
+- [x] **ISS-050** — Validate custom short codes (non-empty, no `/`, no whitespace, length/charset rules) — BR-CODE-010
+- [x] **ISS-051** — Reject custom codes that collide with reserved paths (including `admin`) — BR-CODE-009
+- [x] **ISS-052** — Reject custom codes that already exist (conflict) — BR-CODE-008
+- [x] **ISS-053** — If authenticated user omits custom code, generate random 6-char code — BR-CODE-011
+- [x] **ISS-054** — Set `owner_id` on authenticated creates — BR-OWN-001
+- [x] **ISS-055** — List endpoint: return only links owned by the current user — BR-OWN-003
+- [x] **ISS-056** — Edit endpoint: update `original_url` and/or `short_code` for owned links — BR-OWN-004, BR-OWN-006
+- [x] **ISS-057** — Re-validate original URL and short code on edit — BR-URL-004, BR-OWN-007
+- [x] **ISS-058** — Delete endpoint: hard-delete owned link; code becomes reusable — BR-OWN-005, BR-OWN-008
+- [x] **ISS-059** — Deny edit/delete of links not owned by the user — BR-OWN-004, BR-OWN-005
+- [x] **ISS-060** — Do not expose anonymous links in management list — BR-OWN-009
+- [x] **ISS-102** — Paginated, sorted list of the authenticated user's short links (`GET /api/short-links` + management UI) — BR-OWN-003
+- [x] **ISS-103** — Optional description field on owned short links (DB column, create API, management form and list) — BR-OWN-003
 
 ---
 
@@ -156,11 +158,11 @@ Implemented in Epic 4 (**ISS-101**).
 ## Epic 11 — Management UX
 
 - [x] **ISS-066** — Management area at `/admin/manage` accessible only when signed in (and authorized)
-- [ ] **ISS-067** — Create form with optional custom short code field
-- [ ] **ISS-068** — List owned short links
-- [ ] **ISS-069** — Edit owned short link (original URL and/or short code)
-- [ ] **ISS-070** — Delete owned short link with confirmation
-- [ ] **ISS-071** — Surface conflict/validation errors for custom codes and reserved paths
+- [x] **ISS-067** — Create form with optional custom short code field
+- [x] **ISS-068** — List owned short links
+- [x] **ISS-069** — Edit owned short link (original URL and/or short code)
+- [x] **ISS-070** — Delete owned short link with confirmation
+- [x] **ISS-071** — Surface conflict/validation errors for custom codes and reserved paths
 - [x] **ISS-072** — Redirect unauthenticated users to `/admin/sign-in` when accessing management
 
 ---

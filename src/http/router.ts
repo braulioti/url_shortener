@@ -12,6 +12,14 @@ import { handleAdminRequest } from "./admin-router.js";
 import { handleQrCodeRequest } from "./qr-handler.js";
 import { handleShortCodeRedirect } from "./redirect-handler.js";
 import { sendJson } from "./errors.js";
+import { handleCreateShortLinkRequest } from "./short-links-create-handler.js";
+import {
+  handleDeleteShortLinkRequest,
+  handleGetShortLinkRequest,
+  handleUpdateShortLinkRequest,
+} from "./short-links-item-handler.js";
+import { handleListShortLinksRequest } from "./short-links-list-handler.js";
+import { adminRoutes } from "../routes/paths.js";
 import { handleShortenRequest } from "./shorten-handler.js";
 import { tryServeStatic } from "./static.js";
 
@@ -116,6 +124,45 @@ export async function handleRequest(
   if (req.method === "POST" && pathname === "/api/shorten") {
     await handleShortenRequest(req, res, locale);
     return;
+  }
+
+  if (req.method === "GET" && pathname === "/api/short-links") {
+    await handleListShortLinksRequest(req, res, locale);
+    return;
+  }
+
+  if (req.method === "POST" && pathname === "/api/short-links") {
+    await handleCreateShortLinkRequest(req, res, locale);
+    return;
+  }
+
+  const shortLinkMatch = pathname.match(/^\/api\/short-links\/(\d+)$/);
+  if (shortLinkMatch) {
+    const linkId = Number.parseInt(shortLinkMatch[1]!, 10);
+    if (req.method === "GET") {
+      await handleGetShortLinkRequest(req, res, locale, linkId);
+      return;
+    }
+    if (req.method === "PUT") {
+      await handleUpdateShortLinkRequest(
+        req,
+        res,
+        locale,
+        linkId,
+        adminRoutes.manage,
+      );
+      return;
+    }
+    if (req.method === "DELETE") {
+      await handleDeleteShortLinkRequest(
+        req,
+        res,
+        locale,
+        linkId,
+        adminRoutes.manage,
+      );
+      return;
+    }
   }
 
   const qrMatch = pathname.match(/^\/api\/qr\/([^/]+)$/);
