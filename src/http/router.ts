@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { checkDbConnection } from "../db/pool.js";
 import {
   isLocale,
   localeCookie,
@@ -55,13 +56,24 @@ function safeRedirectTarget(req: IncomingMessage): string {
   return "/";
 }
 
-export function handleRequest(req: IncomingMessage, res: ServerResponse): void {
+export async function handleRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+): Promise<void> {
   const url = requestUrl(req);
   const pathname = url.pathname;
   const locale = resolveLocale(req, url);
 
   if (req.method === "GET" && pathname === "/health") {
-    sendJson(res, 200, { status: "ok" });
+    let db: "ok" | "error" = "error";
+    try {
+      db = (await checkDbConnection()) ? "ok" : "error";
+    } catch {
+      db = "error";
+    }
+
+    const status = db === "ok" ? 200 : 503;
+    sendJson(res, status, { status: db === "ok" ? "ok" : "degraded", db });
     return;
   }
 

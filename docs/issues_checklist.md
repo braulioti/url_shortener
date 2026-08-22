@@ -34,10 +34,10 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ## Epic 2 — Database
 
-- [ ] **ISS-010** — Create `db/migrations/001_create_users.sql` (`users` table)
-- [ ] **ISS-011** — Create `db/migrations/002_create_short_links.sql` (`short_links` table)
-- [ ] **ISS-012** — Ensure unique constraint on `short_links.short_code` and index on `owner_id`
-- [ ] **ISS-013** — Apply migrations to the external PostgreSQL (migrate step, CI, or documented `psql` flow — not Compose `db` init)
+- [x] **ISS-010** — Create `db/migrations/001_create_users.sql` (`users` table with `user_admin`)
+- [x] **ISS-011** — Create `db/migrations/002_create_short_links.sql` (`short_links` table)
+- [x] **ISS-012** — Ensure unique constraint on `short_links.short_code` and index on `owner_id`
+- [x] **ISS-013** — Apply migrations to the external PostgreSQL (on app startup and `npm run migrate`)
 - [ ] **ISS-014** — Create `db/seeds/001_authorized_users.sql` with pre-provisioned authorized users (hashed passwords only)
 - [ ] **ISS-015** — Document how to generate password hashes for seeds
 - [ ] **ISS-016** — Verify schema and seed apply cleanly on the external PostgreSQL instance
@@ -46,7 +46,7 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ## Epic 3 — App core infrastructure
 
-- [ ] **ISS-017** — Connect the Node.js app to PostgreSQL (connection config + health check)
+- [x] **ISS-017** — Connect the Node.js app to PostgreSQL (connection config + health check)
 - [ ] **ISS-018** — Define API error response shape (validation, conflict, not found, unauthorized)
 - [ ] **ISS-019** — Implement request validation helpers for URLs and short codes
 - [ ] **ISS-020** — Define reserved path segments (`v`, auth, API, management, static)

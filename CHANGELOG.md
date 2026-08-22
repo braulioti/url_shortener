@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `users` table migration with `user_admin` flag; default admin user (`admin` / hashed password) created on startup
+- `short_links` migration and tracked schema migrations (`schema_migrations`, `npm run migrate`)
+- PostgreSQL connection pool, migrations on startup, and DB status in `/health`
 - i18n with `src/i18n/pt-BR.json` and `en-US.json` (default `pt-BR`, language switcher, fallback) (Epic 1b)
 
 ## Version 0.1.0

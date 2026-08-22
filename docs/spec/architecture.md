@@ -150,7 +150,7 @@ The Node.js app owns both UI routes and redirect resolution.
 
 Aligned with the product spec:
 
-- **User** — `id`, `username`, `password_hash`, `authorized`, `created_at`
+- **User** — `id`, `username`, `password_hash`, `authorized`, `user_admin`, `created_at`
 - **ShortLink** — `id`, `short_code`, `original_url`, `owner_id` (nullable), `created_at`, `updated_at`
 
 ### Persistence rules
