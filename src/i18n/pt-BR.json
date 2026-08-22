@@ -8,7 +8,9 @@
     "ariaLabel": "Principal",
     "shorten": "Encurtar",
     "manage": "Gerenciar",
-    "login": "Entrar"
+    "login": "Entrar",
+    "changePassword": "Alterar senha",
+    "signUp": "Cadastro"
   },
   "locale": {
     "ariaLabel": "Idioma",
@@ -25,18 +27,95 @@
     "urlLabel": "URL original",
     "urlPlaceholder": "https://exemplo.com/meu-link-muito-longo",
     "submit": "Encurtar",
-    "hint": "Visitantes podem encurtar sem conta. Códigos personalizados ficam na área autenticada."
+    "hint": "Visitantes podem encurtar sem conta. Códigos personalizados ficam na área autenticada.",
+    "resultTitle": "Link criado",
+    "shortUrlLabel": "URL curta:",
+    "shortCodeLabel": "Código:",
+    "qrLabel": "QR Code:",
+    "qrAlt": "QR code da URL curta"
   },
   "login": {
     "title": "Entrar",
     "description": "Acesse a área de gerenciamento do Vortius.",
-    "body": "Contas são provisionadas com antecedência. O formulário de autenticação será conectado nas próximas etapas."
+    "lede": "Use suas credenciais para acessar a área administrativa.",
+    "usernameLabel": "Usuário",
+    "passwordLabel": "Senha",
+    "submit": "Entrar",
+    "noAccount": "Não tem conta?",
+    "createAccount": "Criar conta",
+    "errors": {
+      "invalidCredentials": "Usuário ou senha inválidos.",
+      "unauthorized": "Esta conta não está autorizada a acessar o sistema."
+    }
+  },
+  "signUp": {
+    "title": "Criar conta",
+    "description": "Cadastre-se para gerenciar seus links curtos.",
+    "lede": "Preencha os dados abaixo para criar sua conta.",
+    "usernameLabel": "Usuário",
+    "passwordLabel": "Senha",
+    "passwordConfirmLabel": "Confirmar senha",
+    "submit": "Cadastrar",
+    "haveAccount": "Já tem conta?",
+    "signInLink": "Entrar",
+    "errors": {
+      "validation": "Preencha todos os campos obrigatórios.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "usernameTaken": "Este usuário já está em uso."
+    }
+  },
+  "changePassword": {
+    "title": "Definir nova senha",
+    "menuTitle": "Alterar senha",
+    "description": "Crie uma nova senha para concluir seu primeiro acesso.",
+    "voluntaryDescription": "Atualize a senha da sua conta.",
+    "lede": "Por segurança, defina uma nova senha antes de continuar.",
+    "voluntaryLede": "Escolha uma nova senha para sua conta.",
+    "passwordLabel": "Nova senha",
+    "passwordConfirmLabel": "Confirmar nova senha",
+    "submit": "Salvar nova senha",
+    "errors": {
+      "validation": "Informe a nova senha.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "updateFailed": "Não foi possível atualizar a senha. Tente novamente."
+    }
   },
   "manage": {
     "title": "Gerenciar links",
     "description": "Gerencie seus links curtos no Vortius.",
-    "body": "Aqui você listará, editará e excluirá seus links. Esta área exigirá autenticação nas próximas etapas.",
-    "goToLogin": "Ir para Entrar"
+    "body": "Aqui você listará, editará e excluirá seus links.",
+    "signedInAs": "Conectado como",
+    "signOut": "Sair",
+    "createTitle": "Novo link",
+    "createSubmit": "Criar link",
+    "urlLabel": "URL original",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Ex.: Campanha de verão (opcional)",
+    "listTitle": "Seus links",
+    "emptyList": "Você ainda não criou nenhum link.",
+    "noDescription": "—",
+    "columnShortCode": "Código",
+    "columnDescription": "Descrição",
+    "columnShortUrl": "URL curta",
+    "columnOriginalUrl": "URL original",
+    "columnCreatedAt": "Criado em",
+    "columnActions": "Ações",
+    "shortCodeLabel": "Código curto",
+    "shortCodePlaceholder": "meu-link (opcional)",
+    "shortCodeHint": "Deixe em branco para gerar um código aleatório de 6 caracteres.",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "deleteConfirm": "Excluir este link?",
+    "editTitle": "Editar link",
+    "editDescription": "Atualize um link curto existente.",
+    "save": "Salvar",
+    "backToList": "Voltar à lista",
+    "qrPreviewTitle": "QR Code do link",
+    "paginationLabel": "Paginação da lista de links",
+    "paginationPrevious": "Anterior",
+    "paginationNext": "Próxima",
+    "paginationInfo": "Página {page} de {totalPages} ({total} links)",
+    "totalLinks": "{total} links"
   },
   "notFound": {
     "title": "Não encontrado",
@@ -46,8 +125,12 @@
   },
   "errors": {
     "shortenNotImplemented": "A criação de links curtos será implementada em breve.",
+    "shortCodeCollision": "Não foi possível gerar um código único. Tente novamente.",
     "validationRequiredUrl": "Informe uma URL original.",
     "validationInvalidUrl": "Informe uma URL absoluta válida com http ou https.",
+    "validationDescriptionTooLong": "A descrição deve ter no máximo 255 caracteres.",
+    "validationInvalidShortCode": "Informe um código válido (letras, números, _ e -, até 64 caracteres).",
+    "validationReservedShortCode": "Este código está reservado pelo sistema.",
     "conflictShortCode": "Este código curto já está em uso.",
     "unauthorized": "Você precisa entrar para continuar.",
     "forbidden": "Você não tem permissão para esta ação.",

@@ -61,6 +61,7 @@ Creates the `users` table for pre-provisioned accounts.
 | `username` | `VARCHAR` / `TEXT` | `NOT NULL`, `UNIQUE` | Login identifier |
 | `password_hash` | `TEXT` | `NOT NULL` | Never store plain-text passwords (BR-AUTH-006) |
 | `authorized` | `BOOLEAN` | `NOT NULL`, default `false` | Management access flag (BR-AUTH-003) |
+| `user_admin` | `BOOLEAN` | `NOT NULL`, default `false` | Administrator flag |
 | `created_at` | `TIMESTAMPTZ` | `NOT NULL`, default `now()` | Creation timestamp |
 
 **Responsibilities:**
@@ -125,6 +126,7 @@ users
 ├── username (UNIQUE)
 ├── password_hash
 ├── authorized
+├── user_admin
 └── created_at
 
 short_links
@@ -142,6 +144,7 @@ Aligned with [architecture.md](./architecture.md):
 
 - PostgreSQL runs **outside** this project’s Docker Compose (managed DB, local install, or another stack)
 - Apply `db/migrations/` (and optionally `db/seeds/`) with the chosen migration tooling or `psql` against the external instance
+- On application startup, migrations are applied and a default **admin** user is created if missing (`username`: `admin`, `user_admin`: `true`; password hashed at rest)
 - The app connects using `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`
 - From a Compose container on Docker Desktop, the host machine is typically reachable as `host.docker.internal` (set `DB_HOST` accordingly)
 

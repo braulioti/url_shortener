@@ -154,6 +154,7 @@ Exact path conventions for the short URL root (e.g. `/{code}` vs `/r/{code}`) ma
 | `username` | Login identifier |
 | `password_hash` | Securely hashed password |
 | `authorized` | Whether the account may use management features |
+| `user_admin` | Whether the account is an administrator |
 | `created_at` | Creation timestamp |
 
 ## Error Handling

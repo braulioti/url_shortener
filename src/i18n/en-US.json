@@ -8,7 +8,9 @@
     "ariaLabel": "Main",
     "shorten": "Shorten",
     "manage": "Manage",
-    "login": "Sign in"
+    "login": "Sign in",
+    "changePassword": "Change password",
+    "signUp": "Sign up"
   },
   "locale": {
     "ariaLabel": "Language",
@@ -25,18 +27,95 @@
     "urlLabel": "Original URL",
     "urlPlaceholder": "https://example.com/my-very-long-link",
     "submit": "Shorten",
-    "hint": "Visitors can shorten without an account. Custom codes are available in the authenticated area."
+    "hint": "Visitors can shorten without an account. Custom codes are available in the authenticated area.",
+    "resultTitle": "Link created",
+    "shortUrlLabel": "Short URL:",
+    "shortCodeLabel": "Code:",
+    "qrLabel": "QR code:",
+    "qrAlt": "QR code for the short URL"
   },
   "login": {
     "title": "Sign in",
     "description": "Access the Vortius management area.",
-    "body": "Accounts are provisioned in advance. The sign-in form will be connected in upcoming steps."
+    "lede": "Use your credentials to access the admin area.",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account",
+    "errors": {
+      "invalidCredentials": "Invalid username or password.",
+      "unauthorized": "This account is not authorized to access the system."
+    }
+  },
+  "signUp": {
+    "title": "Create account",
+    "description": "Register to manage your short links.",
+    "lede": "Fill in the details below to create your account.",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "passwordConfirmLabel": "Confirm password",
+    "submit": "Register",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "errors": {
+      "validation": "Please fill in all required fields.",
+      "passwordMismatch": "Passwords do not match.",
+      "usernameTaken": "This username is already taken."
+    }
+  },
+  "changePassword": {
+    "title": "Set a new password",
+    "menuTitle": "Change password",
+    "description": "Create a new password to complete your first sign-in.",
+    "voluntaryDescription": "Update your account password.",
+    "lede": "For security, set a new password before continuing.",
+    "voluntaryLede": "Choose a new password for your account.",
+    "passwordLabel": "New password",
+    "passwordConfirmLabel": "Confirm new password",
+    "submit": "Save new password",
+    "errors": {
+      "validation": "Please enter a new password.",
+      "passwordMismatch": "Passwords do not match.",
+      "updateFailed": "Could not update the password. Please try again."
+    }
   },
   "manage": {
     "title": "Manage links",
     "description": "Manage your short links in Vortius.",
-    "body": "Here you will list, edit, and delete your links. This area will require authentication in upcoming steps.",
-    "goToLogin": "Go to Sign in"
+    "body": "Here you will list, edit, and delete your links.",
+    "signedInAs": "Signed in as",
+    "signOut": "Sign out",
+    "createTitle": "New link",
+    "createSubmit": "Create link",
+    "urlLabel": "Original URL",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "e.g. Summer campaign (optional)",
+    "listTitle": "Your links",
+    "emptyList": "You have not created any links yet.",
+    "noDescription": "—",
+    "columnShortCode": "Code",
+    "columnDescription": "Description",
+    "columnShortUrl": "Short URL",
+    "columnOriginalUrl": "Original URL",
+    "columnCreatedAt": "Created",
+    "columnActions": "Actions",
+    "shortCodeLabel": "Short code",
+    "shortCodePlaceholder": "my-link (optional)",
+    "shortCodeHint": "Leave blank to generate a random 6-character code.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this link?",
+    "editTitle": "Edit link",
+    "editDescription": "Update an existing short link.",
+    "save": "Save",
+    "backToList": "Back to list",
+    "qrPreviewTitle": "Link QR code",
+    "paginationLabel": "Link list pagination",
+    "paginationPrevious": "Previous",
+    "paginationNext": "Next",
+    "paginationInfo": "Page {page} of {totalPages} ({total} links)",
+    "totalLinks": "{total} links"
   },
   "notFound": {
     "title": "Not found",
@@ -46,8 +125,12 @@
   },
   "errors": {
     "shortenNotImplemented": "Short link creation will be implemented soon.",
+    "shortCodeCollision": "Could not generate a unique code. Please try again.",
     "validationRequiredUrl": "Please provide an original URL.",
     "validationInvalidUrl": "Please provide a valid absolute URL with http or https.",
+    "validationDescriptionTooLong": "Description must be at most 255 characters.",
+    "validationInvalidShortCode": "Enter a valid code (letters, numbers, _ and -, up to 64 characters).",
+    "validationReservedShortCode": "This code is reserved by the system.",
     "conflictShortCode": "This short code is already in use.",
     "unauthorized": "You need to sign in to continue.",
     "forbidden": "You do not have permission for this action.",
