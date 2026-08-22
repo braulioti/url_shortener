@@ -1,11 +1,18 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { tryServeStatic } from "./static.js";
+import {
+  isLocale,
+  localeCookie,
+  resolveLocale,
+  t,
+  type Locale,
+} from "../i18n/index.js";
 import {
   renderHomePage,
   renderLoginPage,
   renderManagePage,
   renderNotFoundPage,
 } from "../views/pages.js";
+import { tryServeStatic } from "./static.js";
 
 function sendHtml(res: ServerResponse, status: number, html: string): void {
   const body = Buffer.from(html, "utf8");
@@ -25,8 +32,33 @@ function sendJson(res: ServerResponse, status: number, payload: unknown): void {
   res.end(body);
 }
 
+function requestUrl(req: IncomingMessage): URL {
+  return new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+}
+
+function safeRedirectTarget(req: IncomingMessage): string {
+  const referer = req.headers.referer;
+  if (!referer) {
+    return "/";
+  }
+
+  try {
+    const refererUrl = new URL(referer);
+    const host = req.headers.host;
+    if (host && refererUrl.host === host) {
+      return `${refererUrl.pathname}${refererUrl.search}` || "/";
+    }
+  } catch {
+    return "/";
+  }
+
+  return "/";
+}
+
 export function handleRequest(req: IncomingMessage, res: ServerResponse): void {
-  const pathname = (req.url ?? "/").split("?")[0] ?? "/";
+  const url = requestUrl(req);
+  const pathname = url.pathname;
+  const locale = resolveLocale(req, url);
 
   if (req.method === "GET" && pathname === "/health") {
     sendJson(res, 200, { status: "ok" });
@@ -37,28 +69,39 @@ export function handleRequest(req: IncomingMessage, res: ServerResponse): void {
     return;
   }
 
+  if (req.method === "GET" && pathname.startsWith("/locale/")) {
+    const requested = pathname.slice("/locale/".length);
+    const nextLocale: Locale = isLocale(requested) ? requested : "pt-BR";
+    res.writeHead(302, {
+      Location: safeRedirectTarget(req),
+      "Set-Cookie": localeCookie(nextLocale),
+    });
+    res.end();
+    return;
+  }
+
   if (req.method === "GET" && pathname === "/") {
-    sendHtml(res, 200, renderHomePage());
+    sendHtml(res, 200, renderHomePage(locale));
     return;
   }
 
   if (req.method === "GET" && pathname === "/entrar") {
-    sendHtml(res, 200, renderLoginPage());
+    sendHtml(res, 200, renderLoginPage(locale));
     return;
   }
 
   if (req.method === "GET" && pathname === "/gerenciar") {
-    sendHtml(res, 200, renderManagePage());
+    sendHtml(res, 200, renderManagePage(locale));
     return;
   }
 
   if (req.method === "POST" && pathname === "/api/shorten") {
     sendJson(res, 501, {
       error: "not_implemented",
-      message: "A criação de links curtos será implementada em breve.",
+      message: t(locale, "errors.shortenNotImplemented"),
     });
     return;
   }
 
-  sendHtml(res, 404, renderNotFoundPage());
+  sendHtml(res, 404, renderNotFoundPage(locale));
 }

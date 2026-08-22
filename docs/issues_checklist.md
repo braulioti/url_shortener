@@ -22,13 +22,13 @@ Use this as the backlog for implementing the project. Check items as they are co
 
 ## Epic 1b — Internationalization (i18n)
 
-- [ ] **ISS-081** — Add i18n infrastructure (message catalogs / locale loader) with default locale `pt-BR`
-- [ ] **ISS-082** — Provide `pt-BR` translations for all user-facing UI strings and messages
-- [ ] **ISS-083** — Provide at least one additional locale (e.g. `en`) for the same string set
-- [ ] **ISS-084** — Resolve active locale (user choice and/or request preference) with fallback to `pt-BR`
-- [ ] **ISS-085** — Expose a language switcher (or equivalent) on public and authenticated UI
-- [ ] **ISS-086** — Ensure missing keys fall back to `pt-BR` without breaking the page
-- [ ] **ISS-087** — Localize validation and error messages shown to users
+- [x] **ISS-081** — Add i18n infrastructure (message catalogs / locale loader) with default locale `pt-BR`
+- [x] **ISS-082** — Provide `pt-BR` translations for all user-facing UI strings and messages
+- [x] **ISS-083** — Provide at least one additional locale (e.g. `en`) for the same string set
+- [x] **ISS-084** — Resolve active locale (user choice and/or request preference) with fallback to `pt-BR`
+- [x] **ISS-085** — Expose a language switcher (or equivalent) on public and authenticated UI
+- [x] **ISS-086** — Ensure missing keys fall back to `pt-BR` without breaking the page
+- [x] **ISS-087** — Localize validation and error messages shown to users
 
 ---
 

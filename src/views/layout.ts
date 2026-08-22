@@ -1,27 +1,33 @@
+import type { Locale } from "../i18n/index.js";
+import { createTranslator } from "../i18n/index.js";
+import { escapeHtml } from "./html.js";
+
 export type PageId = "home" | "login" | "manage";
 
-const titles: Record<PageId, string> = {
-  home: "Encurtador de URL",
-  login: "Entrar",
-  manage: "Gerenciar links",
+const pageTitleKeys: Record<PageId, string> = {
+  home: "home.title",
+  login: "login.title",
+  manage: "manage.title",
 };
 
 export function renderLayout(options: {
   page: PageId;
+  locale: Locale;
   body: string;
   description?: string;
+  title?: string;
 }): string {
-  const title = titles[options.page];
+  const translate = createTranslator(options.locale);
+  const pageTitle = options.title ?? translate(pageTitleKeys[options.page]);
   const description =
-    options.description ??
-    "Encurte links, gere QR Code e gerencie suas URLs.";
+    options.description ?? translate("meta.defaultDescription");
 
   return `<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="${options.locale}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${escapeHtml(title)} · Vortius</title>
+    <title>${escapeHtml(pageTitle)} · ${escapeHtml(translate("meta.titleSuffix"))}</title>
     <meta name="description" content="${escapeHtml(description)}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,18 +39,32 @@ export function renderLayout(options: {
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">Vortius</a>
-      <nav class="nav" aria-label="Principal">
-        <a href="/"${ariaCurrent(options.page, "home")}>Encurtar</a>
-        <a href="/gerenciar"${ariaCurrent(options.page, "manage")}>Gerenciar</a>
-        <a href="/entrar"${ariaCurrent(options.page, "login")}>Entrar</a>
-      </nav>
+      <a class="brand" href="/">${escapeHtml(translate("meta.brand"))}</a>
+      <div class="header-actions">
+        <nav class="nav" aria-label="${escapeHtml(translate("nav.ariaLabel"))}">
+          <a href="/"${ariaCurrent(options.page, "home")}>${escapeHtml(translate("nav.shorten"))}</a>
+          <a href="/gerenciar"${ariaCurrent(options.page, "manage")}>${escapeHtml(translate("nav.manage"))}</a>
+          <a href="/entrar"${ariaCurrent(options.page, "login")}>${escapeHtml(translate("nav.login"))}</a>
+        </nav>
+        <nav class="lang-switcher" aria-label="${escapeHtml(translate("locale.ariaLabel"))}">
+          <a
+            href="/locale/pt-BR"
+            hreflang="pt-BR"
+            ${options.locale === "pt-BR" ? 'aria-current="true"' : ""}
+          >${escapeHtml(translate("locale.ptBR"))}</a>
+          <a
+            href="/locale/en-US"
+            hreflang="en-US"
+            ${options.locale === "en-US" ? 'aria-current="true"' : ""}
+          >${escapeHtml(translate("locale.enUS"))}</a>
+        </nav>
+      </div>
     </header>
     <main>
       ${options.body}
     </main>
     <footer class="site-footer">
-      <p>Vortius · encurtador de URL · idioma padrão pt-BR</p>
+      <p>${escapeHtml(translate("footer.text"))}</p>
     </footer>
   </body>
 </html>`;
@@ -52,12 +72,4 @@ export function renderLayout(options: {
 
 function ariaCurrent(current: PageId, page: PageId): string {
   return current === page ? ' aria-current="page"' : "";
-}
-
-export function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
 }

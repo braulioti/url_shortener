@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "brand": "Vortius",
+    "titleSuffix": "Vortius",
+    "defaultDescription": "Encurte links, gere QR Code e gerencie suas URLs."
+  },
+  "nav": {
+    "ariaLabel": "Principal",
+    "shorten": "Encurtar",
+    "manage": "Gerenciar",
+    "login": "Entrar"
+  },
+  "locale": {
+    "ariaLabel": "Idioma",
+    "ptBR": "Português",
+    "enUS": "English"
+  },
+  "footer": {
+    "text": "Vortius · encurtador de URL"
+  },
+  "home": {
+    "title": "Encurtador de URL",
+    "description": "Encurte qualquer URL válida, compartilhe o link curto e obtenha um QR Code.",
+    "lede": "Transforme links longos em atalhos curtos com QR Code. Rápido para compartilhar, simples de lembrar.",
+    "urlLabel": "URL original",
+    "urlPlaceholder": "https://exemplo.com/meu-link-muito-longo",
+    "submit": "Encurtar",
+    "hint": "Visitantes podem encurtar sem conta. Códigos personalizados ficam na área autenticada."
+  },
+  "login": {
+    "title": "Entrar",
+    "description": "Acesse a área de gerenciamento do Vortius.",
+    "body": "Contas são provisionadas com antecedência. O formulário de autenticação será conectado nas próximas etapas."
+  },
+  "manage": {
+    "title": "Gerenciar links",
+    "description": "Gerencie seus links curtos no Vortius.",
+    "body": "Aqui você listará, editará e excluirá seus links. Esta área exigirá autenticação nas próximas etapas.",
+    "goToLogin": "Ir para Entrar"
+  },
+  "notFound": {
+    "title": "Não encontrado",
+    "description": "Página não encontrada.",
+    "body": "A página solicitada não existe.",
+    "backHome": "Voltar ao início"
+  },
+  "errors": {
+    "shortenNotImplemented": "A criação de links curtos será implementada em breve.",
+    "validationRequiredUrl": "Informe uma URL original.",
+    "validationInvalidUrl": "Informe uma URL absoluta válida com http ou https.",
+    "conflictShortCode": "Este código curto já está em uso.",
+    "unauthorized": "Você precisa entrar para continuar.",
+    "forbidden": "Você não tem permissão para esta ação.",
+    "notFound": "Recurso não encontrado."
+  }
+}

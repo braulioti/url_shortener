@@ -1,6 +1,6 @@
 {
   "name": "url-shortener",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "URL shortener with QR codes — single Node.js application",
   "type": "module",

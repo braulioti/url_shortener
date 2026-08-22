@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "brand": "Vortius",
+    "titleSuffix": "Vortius",
+    "defaultDescription": "Shorten links, generate a QR code, and manage your URLs."
+  },
+  "nav": {
+    "ariaLabel": "Main",
+    "shorten": "Shorten",
+    "manage": "Manage",
+    "login": "Sign in"
+  },
+  "locale": {
+    "ariaLabel": "Language",
+    "ptBR": "Português",
+    "enUS": "English"
+  },
+  "footer": {
+    "text": "Vortius · URL shortener"
+  },
+  "home": {
+    "title": "URL Shortener",
+    "description": "Shorten any valid URL, share the short link, and get a QR code.",
+    "lede": "Turn long links into short shortcuts with a QR code. Fast to share, easy to remember.",
+    "urlLabel": "Original URL",
+    "urlPlaceholder": "https://example.com/my-very-long-link",
+    "submit": "Shorten",
+    "hint": "Visitors can shorten without an account. Custom codes are available in the authenticated area."
+  },
+  "login": {
+    "title": "Sign in",
+    "description": "Access the Vortius management area.",
+    "body": "Accounts are provisioned in advance. The sign-in form will be connected in upcoming steps."
+  },
+  "manage": {
+    "title": "Manage links",
+    "description": "Manage your short links in Vortius.",
+    "body": "Here you will list, edit, and delete your links. This area will require authentication in upcoming steps.",
+    "goToLogin": "Go to Sign in"
+  },
+  "notFound": {
+    "title": "Not found",
+    "description": "Page not found.",
+    "body": "The requested page does not exist.",
+    "backHome": "Back to home"
+  },
+  "errors": {
+    "shortenNotImplemented": "Short link creation will be implemented soon.",
+    "validationRequiredUrl": "Please provide an original URL.",
+    "validationInvalidUrl": "Please provide a valid absolute URL with http or https.",
+    "conflictShortCode": "This short code is already in use.",
+    "unauthorized": "You need to sign in to continue.",
+    "forbidden": "You do not have permission for this action.",
+    "notFound": "Resource not found."
+  }
+}

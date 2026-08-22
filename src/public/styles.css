@@ -54,6 +54,14 @@ a:hover {
   animation: rise 0.7s ease both;
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem 1.5rem;
+}
+
 .brand {
   font-family: var(--font);
   font-weight: 700;
@@ -81,6 +89,32 @@ a:hover {
 .nav a:hover,
 .nav a[aria-current="page"] {
   color: var(--ink);
+  text-decoration: none;
+}
+
+.lang-switcher {
+  display: flex;
+  gap: 0.65rem;
+  font-size: 0.85rem;
+}
+
+.lang-switcher a {
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+}
+
+.lang-switcher a:hover {
+  color: var(--ink);
+  text-decoration: none;
+  border-color: var(--line);
+}
+
+.lang-switcher a[aria-current="true"] {
+  color: var(--ink);
+  border-color: rgba(91, 141, 239, 0.55);
+  background: rgba(91, 141, 239, 0.12);
   text-decoration: none;
 }
 

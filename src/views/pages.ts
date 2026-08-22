@@ -1,19 +1,21 @@
+import type { Locale } from "../i18n/index.js";
+import { createTranslator } from "../i18n/index.js";
+import { escapeHtml } from "./html.js";
 import { renderLayout } from "./layout.js";
 
-export function renderHomePage(): string {
+export function renderHomePage(locale: Locale): string {
+  const translate = createTranslator(locale);
+
   return renderLayout({
     page: "home",
-    description:
-      "Encurte qualquer URL válida, compartilhe o link curto e obtenha um QR Code.",
+    locale,
+    description: translate("home.description"),
     body: `
       <section class="hero">
-        <h1>Vortius</h1>
-        <p class="lede">
-          Transforme links longos em atalhos curtos com QR Code. Rápido para
-          compartilhar, simples de lembrar.
-        </p>
+        <h1>${escapeHtml(translate("meta.brand"))}</h1>
+        <p class="lede">${escapeHtml(translate("home.lede"))}</p>
         <form class="shorten-form" method="post" action="/api/shorten" novalidate>
-          <label for="original-url">URL original</label>
+          <label for="original-url">${escapeHtml(translate("home.urlLabel"))}</label>
           <div class="field-row">
             <input
               id="original-url"
@@ -21,63 +23,64 @@ export function renderHomePage(): string {
               type="url"
               inputmode="url"
               autocomplete="url"
-              placeholder="https://exemplo.com/meu-link-muito-longo"
+              placeholder="${escapeHtml(translate("home.urlPlaceholder"))}"
               required
             />
-            <button type="submit">Encurtar</button>
+            <button type="submit">${escapeHtml(translate("home.submit"))}</button>
           </div>
-          <p class="hint">
-            Visitantes podem encurtar sem conta. Códigos personalizados ficam na
-            área autenticada.
-          </p>
+          <p class="hint">${escapeHtml(translate("home.hint"))}</p>
         </form>
       </section>
     `,
   });
 }
 
-export function renderLoginPage(): string {
+export function renderLoginPage(locale: Locale): string {
+  const translate = createTranslator(locale);
+
   return renderLayout({
     page: "login",
-    description: "Acesse a área de gerenciamento do Vortius.",
+    locale,
+    description: translate("login.description"),
     body: `
       <section class="page">
-        <h1>Entrar</h1>
-        <p>
-          Contas são provisionadas com antecedência. O formulário de autenticação
-          será conectado nas próximas etapas.
-        </p>
+        <h1>${escapeHtml(translate("login.title"))}</h1>
+        <p>${escapeHtml(translate("login.body"))}</p>
       </section>
     `,
   });
 }
 
-export function renderManagePage(): string {
+export function renderManagePage(locale: Locale): string {
+  const translate = createTranslator(locale);
+
   return renderLayout({
     page: "manage",
-    description: "Gerencie seus links curtos no Vortius.",
+    locale,
+    description: translate("manage.description"),
     body: `
       <section class="page">
-        <h1>Gerenciar links</h1>
-        <p>
-          Aqui você listará, editará e excluirá seus links. Esta área exigirá
-          autenticação nas próximas etapas.
-        </p>
-        <p><a href="/entrar">Ir para Entrar</a></p>
+        <h1>${escapeHtml(translate("manage.title"))}</h1>
+        <p>${escapeHtml(translate("manage.body"))}</p>
+        <p><a href="/entrar">${escapeHtml(translate("manage.goToLogin"))}</a></p>
       </section>
     `,
   });
 }
 
-export function renderNotFoundPage(): string {
+export function renderNotFoundPage(locale: Locale): string {
+  const translate = createTranslator(locale);
+
   return renderLayout({
     page: "home",
-    description: "Página não encontrada.",
+    locale,
+    title: translate("notFound.title"),
+    description: translate("notFound.description"),
     body: `
       <section class="page">
-        <h1>Não encontrado</h1>
-        <p>A página solicitada não existe.</p>
-        <p><a href="/">Voltar ao início</a></p>
+        <h1>${escapeHtml(translate("notFound.title"))}</h1>
+        <p>${escapeHtml(translate("notFound.body"))}</p>
+        <p><a href="/">${escapeHtml(translate("notFound.backHome"))}</a></p>
       </section>
     `,
   });
