@@ -175,17 +175,18 @@ export async function handleAdminRequest(
       return true;
     }
 
-    if (!session.mustChangePassword) {
-      res.writeHead(302, { Location: adminRoutes.manage });
-      res.end();
-      return true;
-    }
-
     const error = new URL(
       req.url ?? adminRoutes.changePassword,
       "http://localhost",
     ).searchParams.get("error");
-    sendHtml(res, 200, renderChangePasswordPage(locale, { error }));
+    sendHtml(
+      res,
+      200,
+      renderChangePasswordPage(locale, {
+        error,
+        forced: session.mustChangePassword,
+      }),
+    );
     return true;
   }
 

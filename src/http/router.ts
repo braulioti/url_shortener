@@ -6,12 +6,12 @@ import {
   resolveLocale,
   type Locale,
 } from "../i18n/index.js";
-import { isAdminPath } from "../routes/paths.js";
+import { adminRoutes, isAdminPath } from "../routes/paths.js";
 import { renderHomePage, renderNotFoundPage } from "../views/pages.js";
 import { handleAdminRequest } from "./admin-router.js";
+import { sendJson } from "./errors.js";
 import { handleQrCodeRequest } from "./qr-handler.js";
 import { handleShortCodeRedirect } from "./redirect-handler.js";
-import { sendJson } from "./errors.js";
 import { handleCreateShortLinkRequest } from "./short-links-create-handler.js";
 import {
   handleDeleteShortLinkRequest,
@@ -19,7 +19,6 @@ import {
   handleUpdateShortLinkRequest,
 } from "./short-links-item-handler.js";
 import { handleListShortLinksRequest } from "./short-links-list-handler.js";
-import { adminRoutes } from "../routes/paths.js";
 import { handleShortenRequest } from "./shorten-handler.js";
 import { tryServeStatic } from "./static.js";
 

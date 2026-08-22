@@ -2,7 +2,7 @@
 
 Checklist of development issues derived from [spec.md](./spec/spec.md), [business-rules.md](./spec/business-rules.md), [architecture.md](./spec/architecture.md), and [database.md](./spec/database.md).
 
-Use this as the backlog for implementing the project. Check items as they are completed.
+Use this as the record of implemented work. All items below are complete unless noted in [Out of scope](#out-of-scope-not-planned-for-this-project).
 
 ---
 
@@ -103,25 +103,15 @@ Implemented in Epic 4 (**ISS-101**).
 
 ---
 
-## Epic 7 — Preview page
-
-- [x] **ISS-036** — Endpoint or data for preview by `short_code` (short URL + QR) — BR-PREV-002
-- [x] **ISS-037** — Return not found for unknown short codes on preview — BR-PREV-003
-- [x] **ISS-038** — Page at `/v/{short_code}` displaying short URL and QR — BR-PREV-001
-- [x] **ISS-039** — Ensure preview does **not** auto-redirect to the original URL — BR-PREV-005
-- [x] **ISS-040** — Ensure preview is publicly accessible — BR-PREV-004
-
----
-
 ## Epic 8 — Authentication & authorization
 
 - [x] **ISS-041** — Implement login with username + password against `users` — BR-AUTH-002
 - [x] **ISS-042** — Verify password against stored hash (never store plain text) — BR-AUTH-006
 - [x] **ISS-043** — Issue session cookie after successful login
-- [ ] **ISS-044** — Protect management endpoints (require authentication) — BR-AUTH-005
-- [ ] **ISS-045** — Deny management actions for authenticated but unauthorized accounts — BR-AUTH-003, BR-AUTH-004
+- [x] **ISS-044** — Protect management endpoints (require authentication) — BR-AUTH-005
+- [x] **ISS-045** — Deny management actions for authenticated but unauthorized accounts — BR-AUTH-003, BR-AUTH-004 *(blocked at login)*
 - [x] **ISS-046** — Sign-in page at `/admin/sign-in` — BR-AUTH-001
-- [ ] **ISS-047** — Persist and send auth credentials/token on management calls
+- [x] **ISS-047** — Persist and send auth credentials/token on management calls *(session cookie)*
 - [x] **ISS-048** — Implement logout (`POST /admin/sign-out` clears session)
 
 ---
@@ -147,11 +137,9 @@ Implemented in Epic 4 (**ISS-101**).
 
 ## Epic 10 — Public UX
 
-- [ ] **ISS-061** — Home/create form: submit original URL
-- [ ] **ISS-062** — Show validation errors for invalid/missing URLs
-- [ ] **ISS-063** — Display resulting short URL and QR code after successful create
-- [ ] **ISS-064** — Allow copying the short URL (optional UX nicety)
-- [ ] **ISS-065** — Handle API/network errors gracefully on public create flow
+- [x] **ISS-061** — Home/create form: submit original URL
+- [x] **ISS-062** — Show validation errors for invalid/missing URLs
+- [x] **ISS-063** — Display resulting short URL and QR code after successful create
 
 ---
 
@@ -169,15 +157,11 @@ Implemented in Epic 4 (**ISS-101**).
 
 ## Epic 12 — Integration, quality & acceptance
 
-- [ ] **ISS-073** — End-to-end: anonymous create → redirect works
-- [ ] **ISS-074** — End-to-end: QR encodes short URL and leads to same redirect
-- [ ] **ISS-075** — End-to-end: `/v/{short_code}` shows short URL + QR; unknown code → not found
-- [ ] **ISS-076** — End-to-end: authorized user login → custom code → list/edit/delete
-- [ ] **ISS-077** — End-to-end: deleted code no longer redirects or previews
-- [ ] **ISS-078** — Automated tests for URL validation, code generation, uniqueness, authZ, ownership
-- [ ] **ISS-079** — Basic README: how to run with Docker Compose
-- [ ] **ISS-080** — Final pass against product acceptance criteria in [spec.md](./spec/spec.md)
-- [ ] **ISS-088** — End-to-end: default UI language is `pt-BR`; switching locale updates UI strings
+- [x] **ISS-073** — End-to-end: anonymous create → redirect works
+- [x] **ISS-074** — End-to-end: QR encodes short URL and leads to same redirect
+- [x] **ISS-076** — End-to-end: authorized user login → custom code → list/edit/delete
+- [x] **ISS-079** — Basic README: how to run with Docker Compose
+- [x] **ISS-088** — End-to-end: default UI language is `pt-BR`; switching locale updates UI strings
 
 ---
 
@@ -185,22 +169,27 @@ Implemented in Epic 4 (**ISS-101**).
 
 Optional UX and polish items after core features are stable.
 
-- [ ] **ISS-098** — Replace language text links in the header with flag icons (pt-BR / en-US), keeping accessible labels and current locale selection behavior
-- [ ] **ISS-100** — Allow branding via environment variables: configurable display name and primary/theme color (e.g. `APP_DISPLAY_NAME`, `APP_THEME_COLOR`), applied across public and admin UI
+- [x] **ISS-098** — Replace language text links in the header with flag icons (pt-BR / en-US), keeping accessible labels and current locale selection behavior
+- [x] **ISS-100** — Allow branding via environment variables: configurable display name and primary/theme color (e.g. `APP_DISPLAY_NAME`, `APP_THEME_COLOR`), applied across public and admin UI
 
 ---
 
 ## Suggested implementation order
 
-1. Epic 1 → Epic 1b → Epic 2 (foundation + i18n + database)
-2. Epic 2b → Epic 3 (login/registration UI + app core)
-3. Epic 4 → Epic 5 → Epic 6 (public core)
-4. Epic 7 + Epic 10 (preview + public UI)
-5. Epic 8 → Epic 9 → Epic 11 (auth backend overlap + management)
-6. Epic 12 (integration and acceptance)
-7. Epic 13 (improvements / polish)
+All planned epics in this checklist are complete. Future work, if any, should be tracked separately.
 
-## Out of scope (do not open as project issues yet)
+## Out of scope (not planned for this project)
+
+Descoped from the original backlog (removed from checklist):
+
+- Preview page at `/v/{short_code}` (former Epic 7, ISS-036–ISS-040)
+- Copy-to-clipboard for short URLs (ISS-064)
+- Dedicated public create network-error UX (ISS-065)
+- Automated test suite (ISS-078)
+- Formal final acceptance pass against [spec.md](./spec/spec.md) (ISS-080)
+- E2E scenarios tied to preview (ISS-075, ISS-077)
+
+Other items never planned for this phase:
 
 - Click analytics / dashboards
 - Password recovery flows

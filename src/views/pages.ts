@@ -1,5 +1,6 @@
 import type { SessionUser } from "../auth/session.js";
 import { config } from "../config.js";
+import { resolveDisplayName } from "../branding/theme.js";
 import type { Locale } from "../i18n/index.js";
 import { createTranslator } from "../i18n/index.js";
 import { adminRoutes, manageEditPath } from "../routes/paths.js";
@@ -100,6 +101,7 @@ export function renderHomePage(
   } = {},
 ): string {
   const translate = createTranslator(locale);
+  const displayName = resolveDisplayName(config.appDisplayName);
 
   const errorKey =
     options.error === "required"
@@ -138,7 +140,7 @@ export function renderHomePage(
     description: translate("home.description"),
     body: `
       <section class="hero">
-        <h1>${escapeHtml(translate("meta.brand"))}</h1>
+        <h1>${escapeHtml(displayName)}</h1>
         <p class="lede">${escapeHtml(translate("home.lede"))}</p>
         ${errorHtml}
         ${resultHtml}
@@ -260,20 +262,35 @@ export function renderSignUpPage(
 
 export function renderChangePasswordPage(
   locale: Locale,
-  options: { error?: string | null } = {},
+  options: { error?: string | null; forced?: boolean } = {},
 ): string {
   const translate = createTranslator(locale);
   const errorKey = changePasswordErrorKey(options.error);
   const errorHtml = errorKey ? renderAlert(translate(errorKey)) : "";
+  const forced = options.forced ?? false;
+  const title = forced
+    ? translate("changePassword.title")
+    : translate("changePassword.menuTitle");
+  const lede = forced
+    ? translate("changePassword.lede")
+    : translate("changePassword.voluntaryLede");
+  const description = forced
+    ? translate("changePassword.description")
+    : translate("changePassword.voluntaryDescription");
+  const backLink = forced
+    ? ""
+    : `<p><a href="${adminRoutes.manage}">${escapeHtml(translate("manage.backToList"))}</a></p>`;
 
   return renderLayout({
     page: "changePassword",
     locale,
-    description: translate("changePassword.description"),
+    title,
+    description,
     body: `
       <section class="page auth-page">
-        <h1>${escapeHtml(translate("changePassword.title"))}</h1>
-        <p>${escapeHtml(translate("changePassword.lede"))}</p>
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(lede)}</p>
+        ${backLink}
         ${errorHtml}
         <form class="auth-form" method="post" action="${adminRoutes.changePassword}" novalidate>
           <label for="new-password">${escapeHtml(translate("changePassword.passwordLabel"))}</label>
@@ -490,6 +507,24 @@ export function renderEditLinkPage(
       : linkFormErrorKey(options.error);
   const errorHtml = errorKey ? renderAlert(translate(errorKey)) : "";
   const editPath = manageEditPath(link.id);
+  const shortUrl = buildShortUrl(link.short_code);
+
+  const qrPreviewHtml = `
+        <section class="result-card edit-qr-preview" aria-labelledby="edit-qr-heading">
+          <h2 id="edit-qr-heading">${escapeHtml(translate("manage.qrPreviewTitle"))}</h2>
+          <p><strong>${escapeHtml(translate("manage.columnShortUrl"))}</strong>
+            <a href="${escapeHtml(shortUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(shortUrl)}</a>
+          </p>
+          <p><strong>${escapeHtml(translate("home.qrLabel"))}</strong></p>
+          <img
+            class="qr-image"
+            src="${escapeHtml(qrCodeApiPath(link.short_code))}"
+            width="256"
+            height="256"
+            alt="${escapeHtml(translate("home.qrAlt"))}"
+          />
+        </section>
+      `;
 
   return renderLayout({
     page: "manage",
@@ -537,6 +572,7 @@ export function renderEditLinkPage(
             <button type="submit">${escapeHtml(translate("manage.save"))}</button>
           </form>
         </section>
+        ${qrPreviewHtml}
       </section>
     `,
   });

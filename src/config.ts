@@ -23,6 +23,8 @@ export const config = {
     "ALLOW_EXTERNAL_USER_REGISTRATION",
     false,
   ),
+  appDisplayName: optional("APP_DISPLAY_NAME", ""),
+  appThemeColor: optional("APP_THEME_COLOR", ""),
   db: {
     host: optional("DB_HOST", "localhost"),
     port: Number(optional("DB_PORT", "5432")),

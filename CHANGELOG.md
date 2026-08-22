@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Paginated, sorted list of owned short links via `GET /api/short-links` and `/admin/manage` (Epic 9, ISS-102)
 - Optional description field on owned short links with `POST /api/short-links` (Epic 9, ISS-103)
 - Full CRUD for owned short links: create (optional custom code), read, update, delete via API and `/admin/manage` UI (Epic 9 / Epic 11)
+- Configurable branding via `APP_DISPLAY_NAME` and `APP_THEME_COLOR`; locale switcher with flag icons (Epic 13)
 - API error response shape and URL validation helpers (Epic 3)
 - Public base URL helper for composing short URLs (`PUBLIC_BASE_URL`)
 - `users` table migration with `user_admin` flag; default admin user (`admin` / hashed password) created on startup

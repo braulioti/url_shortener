@@ -9,6 +9,7 @@
     "shorten": "Encurtar",
     "manage": "Gerenciar",
     "login": "Entrar",
+    "changePassword": "Alterar senha",
     "signUp": "Cadastro"
   },
   "locale": {
@@ -65,8 +66,11 @@
   },
   "changePassword": {
     "title": "Definir nova senha",
+    "menuTitle": "Alterar senha",
     "description": "Crie uma nova senha para concluir seu primeiro acesso.",
+    "voluntaryDescription": "Atualize a senha da sua conta.",
     "lede": "Por segurança, defina uma nova senha antes de continuar.",
+    "voluntaryLede": "Escolha uma nova senha para sua conta.",
     "passwordLabel": "Nova senha",
     "passwordConfirmLabel": "Confirmar nova senha",
     "submit": "Salvar nova senha",
@@ -106,6 +110,7 @@
     "editDescription": "Atualize um link curto existente.",
     "save": "Salvar",
     "backToList": "Voltar à lista",
+    "qrPreviewTitle": "QR Code do link",
     "paginationLabel": "Paginação da lista de links",
     "paginationPrevious": "Anterior",
     "paginationNext": "Próxima",

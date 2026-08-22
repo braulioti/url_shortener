@@ -9,6 +9,7 @@
     "shorten": "Shorten",
     "manage": "Manage",
     "login": "Sign in",
+    "changePassword": "Change password",
     "signUp": "Sign up"
   },
   "locale": {
@@ -65,8 +66,11 @@
   },
   "changePassword": {
     "title": "Set a new password",
+    "menuTitle": "Change password",
     "description": "Create a new password to complete your first sign-in.",
+    "voluntaryDescription": "Update your account password.",
     "lede": "For security, set a new password before continuing.",
+    "voluntaryLede": "Choose a new password for your account.",
     "passwordLabel": "New password",
     "passwordConfirmLabel": "Confirm new password",
     "submit": "Save new password",
@@ -106,6 +110,7 @@
     "editDescription": "Update an existing short link.",
     "save": "Save",
     "backToList": "Back to list",
+    "qrPreviewTitle": "Link QR code",
     "paginationLabel": "Link list pagination",
     "paginationPrevious": "Previous",
     "paginationNext": "Next",
