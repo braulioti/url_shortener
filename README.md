@@ -111,10 +111,10 @@ Configure repository secrets:
 | `DOCKERHUB_USERNAME` | Docker Hub username |
 | `DOCKERHUB_TOKEN` | Docker Hub access token (or password) |
 
-Published tags on `main`:
+Published tags on `main` (version from `package.json`):
 
 - `{DOCKERHUB_USERNAME}/url-shortener:latest`
-- `{DOCKERHUB_USERNAME}/url-shortener:{git-sha}`
+- `{DOCKERHUB_USERNAME}/url-shortener:{version}` (e.g. `1.0.0`)
 
 ## License
 

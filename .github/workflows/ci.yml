@@ -41,9 +41,25 @@ jobs:
         id: docker
         shell: bash
         run: |
+          VERSION="$(node -p "require('./package.json').version")"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-].+)?$ ]]; then
+            echo "::error::Invalid package.json version: $VERSION"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
+            USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+            if [[ -z "$USERNAME" ]]; then
+              echo "::error::DOCKERHUB_USERNAME secret is not set"
+              exit 1
+            fi
+
+            IMAGE="${USERNAME}/url-shortener"
             echo "push=true" >> "$GITHUB_OUTPUT"
-            echo "tags=${{ secrets.DOCKERHUB_USERNAME }}/url-shortener:latest,${{ secrets.DOCKERHUB_USERNAME }}/url-shortener:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+            echo "tags=${IMAGE}:latest,${IMAGE}:${VERSION}" >> "$GITHUB_OUTPUT"
           else
             echo "push=false" >> "$GITHUB_OUTPUT"
             echo "tags=url-shortener:ci" >> "$GITHUB_OUTPUT"
